@@ -1,0 +1,15 @@
+{
+  "name": "dsos-api",
+  "version": "1.0.0",
+  "description": "DS-OS API server — bridges markdown data files to Lovable frontend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}
