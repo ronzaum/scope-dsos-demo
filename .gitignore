@@ -1,0 +1,14 @@
+# Private workspace — never committed
+/private/
+
+# Dependencies
+node_modules/
+
+# Sensitive data — client files never committed
+/data/clients/
+
+# Trial day observations — never committed
+/data/friday/trial_log.md
+
+# Audit logs — never committed
+api/logs/

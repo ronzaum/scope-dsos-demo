@@ -19,6 +19,13 @@ const { parseClientFile, buildClientSummary } = require('./parsers/client');
 const { buildPlaybookResponse } = require('./parsers/playbook');
 const { buildSystemResponse } = require('./parsers/system');
 
+// --- Security layer ---
+const { validRoles } = require('./config/roles');
+const { authMiddleware, generateToken } = require('./middleware/auth');
+const { rbacMiddleware, filterClientFields } = require('./middleware/rbac');
+const { auditMiddleware, readAuditLog } = require('./middleware/audit');
+const { buildRedactionMap, redact } = require('./middleware/redact');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 const DATA_DIR = path.resolve(__dirname, '..', 'data');
@@ -118,6 +125,11 @@ function reloadFile(filePath) {
 app.use(cors());
 app.use(express.json());
 
+// Security middleware stack: audit first (captures everything), then auth, then RBAC.
+app.use(auditMiddleware);
+app.use(authMiddleware);
+app.use(rbacMiddleware);
+
 // --- Routes ---
 
 // Health check
@@ -127,6 +139,30 @@ app.get('/api/health', (req, res) => {
     lastUpdated: cache.lastUpdated,
     clients: cache.clients.size,
   });
+});
+
+// Login — validates name + role, returns JWT
+app.post('/api/auth/login', (req, res) => {
+  const { name, role } = req.body;
+
+  if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    return res.status(400).json({ error: 'Name is required.' });
+  }
+  if (!role || !validRoles.includes(role)) {
+    return res.status(400).json({
+      error: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+    });
+  }
+
+  const token = generateToken(name.trim(), role);
+  res.json({ token, name: name.trim(), role, expiresIn: '8h' });
+});
+
+// Audit log — DS-only (RBAC enforces this)
+app.get('/api/audit', (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 100;
+  const entries = readAuditLog(limit);
+  res.json({ entries, count: entries.length });
 });
 
 // Overview: aggregated stats + deployment table + signal feed
@@ -139,18 +175,30 @@ app.get('/api/overview', (req, res) => {
   const playbookEntries = (cache.playbook?.deploymentPatterns?.length || 0)
     + (cache.playbook?.resolutionPatterns?.length || 0);
 
-  // Avg onboarding — derive from clients with commercial.monthsIn
-  let avgOnboarding = '14 days'; // default
-  const monthsValues = clients
-    .map(c => c.commercial?.monthsIn)
-    .filter(Boolean)
-    .map(v => parseInt(v));
-  if (monthsValues.length > 0) {
-    avgOnboarding = `${Math.round(monthsValues.reduce((a, b) => a + b, 0) / monthsValues.length * 30)} days`;
+  // Avg onboarding — compute from date created to first milestone/phase start
+  // For clients with interaction history, find the gap between creation and first "Phase 1" or "Milestone"
+  let avgOnboarding = '14 days';
+  const onboardingDays = [];
+  for (const c of clients) {
+    const created = c.profile?.dateCreated;
+    const firstMilestone = (c.interactionHistory || []).find(
+      i => i.source?.toLowerCase().includes('milestone') || i.summary?.toLowerCase().includes('phase 1')
+    );
+    if (created && firstMilestone?.date) {
+      const days = Math.round((new Date(firstMilestone.date) - new Date(created)) / (1000 * 60 * 60 * 24));
+      if (days > 0) onboardingDays.push(days);
+    }
+  }
+  if (onboardingDays.length > 0) {
+    avgOnboarding = `${Math.round(onboardingDays.reduce((a, b) => a + b, 0) / onboardingDays.length)} days`;
   }
 
-  // Inspection improvement — avg of adoption improvements
-  const improvements = clients
+  // Inspection improvement — use best healthy client's improvement (exclude stalled/at-risk)
+  const healthyImprovements = clients
+    .filter(c => {
+      const stage = c.deploymentState?.stage?.toLowerCase() || '';
+      return !stage.includes('stalled') && !stage.includes('at risk') && !stage.includes('intake');
+    })
     .map(c => c.deploymentState?.baselineImprovement)
     .filter(Boolean)
     .map(v => {
@@ -158,8 +206,8 @@ app.get('/api/overview', (req, res) => {
       return match ? parseInt(match[1]) : null;
     })
     .filter(v => v !== null);
-  const avgImprovement = improvements.length > 0
-    ? `${Math.round(improvements.reduce((a, b) => a + b, 0) / improvements.length)}%`
+  const avgImprovement = healthyImprovements.length > 0
+    ? `${Math.round(healthyImprovements.reduce((a, b) => a + b, 0) / healthyImprovements.length)}%`
     : '—';
 
   // Signal feed — combine recent interactions across all clients + system log
@@ -185,21 +233,30 @@ app.get('/api/clients', (req, res) => {
   res.json(summaries);
 });
 
-// Single client (full detail)
+// Single client (full detail, filtered by role)
 app.get('/api/clients/:slug', (req, res) => {
   const client = cache.clients.get(req.params.slug);
   if (!client) {
     return res.status(404).json({ error: `Client '${req.params.slug}' not found` });
   }
-  res.json(client);
+  const filtered = filterClientFields(client, req.user.role);
+  res.json(filtered);
 });
 
-// Playbook (patterns + methods + insights)
+// Playbook (patterns + methods + insights) — redacted for non-DS roles
 app.get('/api/playbook', (req, res) => {
   if (!cache.playbook) {
     return res.status(503).json({ error: 'Playbook data not loaded' });
   }
-  res.json(cache.playbook);
+
+  // DS sees raw playbook. Everyone else gets client names redacted.
+  if (req.user.role === 'ds') {
+    return res.json(cache.playbook);
+  }
+
+  const redactionMap = buildRedactionMap();
+  const redacted = redact(cache.playbook, redactionMap);
+  res.json(redacted);
 });
 
 // Method registry (methods + rules + change log)
@@ -326,15 +383,21 @@ watcher.on('unlink', (filePath) => {
 });
 
 app.listen(PORT, () => {
+  const authEnabled = true;
   console.log(`\nDS-OS API server running on http://localhost:${PORT}`);
+  console.log(`Auth: ${authEnabled ? 'JWT (Bearer token)' : 'disabled'}`);
   console.log(`Watching ${DATA_DIR} for changes\n`);
-  console.log('Endpoints:');
-  console.log(`  GET /api/health`);
-  console.log(`  GET /api/overview`);
-  console.log(`  GET /api/clients`);
-  console.log(`  GET /api/clients/:slug`);
-  console.log(`  GET /api/playbook`);
-  console.log(`  GET /api/methods`);
-  console.log(`  GET /api/system/log`);
+  console.log('Public endpoints:');
+  console.log(`  GET  /api/health`);
+  console.log(`  POST /api/auth/login`);
+  console.log('');
+  console.log('Authenticated endpoints:');
+  console.log(`  GET  /api/overview`);
+  console.log(`  GET  /api/clients`);
+  console.log(`  GET  /api/clients/:slug   (field-filtered by role)`);
+  console.log(`  GET  /api/playbook        (redacted for non-DS roles)`);
+  console.log(`  GET  /api/methods`);
+  console.log(`  GET  /api/system/log`);
+  console.log(`  GET  /api/audit           (DS-only)`);
   console.log('');
 });

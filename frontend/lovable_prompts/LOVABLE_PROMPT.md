@@ -262,9 +262,188 @@ A simple metrics comparison table:
 
 ## Implementation Notes
 
-- All data is hardcoded/simulated. No real API connections needed
 - Terminal animation: use setInterval with typewriter effect
 - Charts/progress bars: CSS-only or lightweight library (no D3 needed)
-- Signal feed: static data, newest first
 - Client detail tabs: client-side tab switching, no routing needed per tab
 - Total build time target: this is a demo, not production. Prioritise looking real over being real
+
+---
+
+## API Integration
+
+The app fetches live data from a local API server that reads the same markdown files that Claude Code slash commands write to. This means when a slash command runs (e.g., `/Deploy_Plan`), the dashboard updates automatically.
+
+**Base URL:** `http://localhost:3001`
+
+**Connection strategy:**
+- On page load, fetch data from the API
+- Poll every 5 seconds with `setInterval` to pick up changes in near real-time
+- If the API is unreachable (fetch fails), fall back to the hardcoded demo data below so the app always works standalone
+- Show a small connection indicator in the sidebar: green dot + "Live" when API responds, grey dot + "Offline" when using fallback data
+
+### API Endpoints and Page Mapping
+
+**Page 1: Overview Dashboard**
+```
+GET /api/overview
+```
+Response shape:
+```json
+{
+  "stats": {
+    "activeDeployments": 3,
+    "avgOnboarding": "12 days",
+    "inspectionImprovement": "37%",
+    "playbookEntries": 8
+  },
+  "deployments": [
+    {
+      "client": "Bureau Veritas",
+      "slug": "bureau_veritas",
+      "sector": "Testing, Inspection, Certification (TIC)",
+      "stage": "Phase 2",
+      "health": "green",
+      "contract": "£250k",
+      "users": "38/56",
+      "adoption": 84,
+      "openIssues": 1,
+      "hasBlocking": false,
+      "nextAction": "Phase 2 compliance dashboard rollout"
+    }
+  ],
+  "signalFeed": [
+    {
+      "date": "2026-02-26",
+      "client": "Intertek",
+      "source": "Log_Issue",
+      "text": "Intertek: ISSUE-001 logged...",
+      "icon": "alert",
+      "time": "2h ago"
+    }
+  ]
+}
+```
+
+Map `stats` to the 4 stat cards. Map `deployments` array to the deployment table rows. Map `signalFeed` to the signal feed. Use `deployment.slug` for navigation to client detail. Map `health` values ("green", "amber", "red") to the dot colours. Map `stage` to the pill badge.
+
+**Page 2: Client Detail**
+```
+GET /api/clients/:slug
+```
+Response shape (abbreviated — full client data):
+```json
+{
+  "name": "Bureau Veritas",
+  "slug": "bureau_veritas",
+  "profile": { "sector": "...", "size": "...", "inspectionTypes": "...", "geography": "...", "source": "...", "dateCreated": "..." },
+  "commercial": { "contractStatus": "...", "contractValue": "...", "term": "...", "renewalDate": "...", "economicBuyer": "...", "successCriteria": "...", "expansionPotential": "..." },
+  "deploymentState": { "stage": "...", "phase": "...", "featuresLive": "...", "users": "...", "adoption": "...", "adoptionPercent": 84, "baselineImprovement": "..." },
+  "constraintMap": {
+    "userMap": [{ "userType": "...", "count": "...", "dailyReality": "...", "topPainPoint": "...", "adoptionSignal": "..." }],
+    "solutionsAudit": { "previousTools": "...", "frictionPoints": [{ "severity": "blocking", "emoji": "🔴", "text": "..." }] },
+    "productMatch": [{ "need": "...", "scopeCapability": "...", "fit": "...", "priority": "..." }],
+    "wedgeUseCase": "..."
+  },
+  "deploymentPlan": {
+    "method": { "name": "...", "rationale": "..." },
+    "phases": [{ "name": "Phase 1 — Foundation", "timeline": "Weeks 1-4", "status": "COMPLETE", "items": ["..."] }],
+    "riskRegister": [{ "risk": "...", "likelihood": "...", "impact": "...", "mitigation": "...", "status": "..." }]
+  },
+  "issueLog": [{ "id": "ISSUE-001", "title": "...", "status": "Resolved", "severity": "degrading", "severityEmoji": "🟠", "description": "...", "rootCause": "...", "resolution": "..." }],
+  "interactionHistory": [{ "date": "...", "source": "...", "summary": "..." }],
+  "stakeholderMap": [{ "name": "...", "role": "...", "priority": "...", "communicationStyle": "...", "trustLevel": "...", "notes": "..." }],
+  "playbookContributions": [{ "date": "...", "description": "..." }]
+}
+```
+
+Map each top-level key to the corresponding tab:
+- `profile` + `commercial` + `deploymentState` → Overview tab
+- `constraintMap` → Constraint Map tab
+- `deploymentPlan` → Deployment Plan tab (use `phases[].status` for the visual timeline: "COMPLETE" = green, "IN PROGRESS" = amber, "PLANNED" = grey)
+- `issueLog` → Issues tab (use `severity` for badge colour, `status` for Open/Resolved filter)
+- `interactionHistory` → Interactions tab (reverse chronological)
+- `stakeholderMap` → Stakeholders tab (map `trustLevel` to the visual indicator)
+
+If `constraintMap` or `deploymentPlan` is `null`, show a placeholder message: "Not yet completed. Run the corresponding slash command."
+
+**Page 3: Terminal** — No API fetch needed. Terminal animation is hardcoded and self-contained.
+
+**Page 4: Playbook & Learnings**
+```
+GET /api/playbook
+GET /api/methods
+```
+
+Playbook response:
+```json
+{
+  "deploymentPatterns": [{ "name": "...", "source": "...", "appliesWhen": "...", "confidence": "High", "pattern": "...", "recommendedAction": "..." }],
+  "resolutionPatterns": [{ "name": "...", "category": "...", "rootCause": "...", "confidence": "...", "conditions": "...", "prevention": "..." }],
+  "metricsBenchmarks": [{ "metric": "...", "bureauVeritasMonth3)": "...", "tuvSudMonth5)": "...", "target": "..." }]
+}
+```
+
+Methods response:
+```json
+{
+  "methods": [{ "id": "M-001", "name": "...", "status": "Active — Recommended Default", "conditions": "...", "lastValidated": "..." }],
+  "rules": [{ "id": "R-001", "name": "...", "rule": "...", "rationale": "...", "exceptions": "..." }],
+  "changeLog": [{ "date": "...", "change": "...", "evidence": "...", "appliedBy": "..." }]
+}
+```
+
+Map `deploymentPatterns` to Section 1 card grid. Map `resolutionPatterns` to Section 2 card grid. Map `methods` to the Method Registry table. Map `rules` to the expandable Operational Rules list. Parse the `confidence` field text for the badge colour ("High" = green, "Medium" = amber, "Low" = red). Parse `methods[].status` for the status column ("Restricted" = amber warning icon, "Active" = green).
+
+### Fallback Data
+
+If the API is unreachable, use this hardcoded data for the overview:
+
+```javascript
+const FALLBACK_STATS = {
+  activeDeployments: 3,
+  avgOnboarding: "14 days",
+  inspectionImprovement: "37%",
+  playbookEntries: 8,
+};
+
+const FALLBACK_DEPLOYMENTS = [
+  { client: "Bureau Veritas", slug: "bureau_veritas", sector: "TIC", stage: "Phase 2", health: "green", contract: "£250k", users: "49/56", adoption: 84, openIssues: 1, hasBlocking: false, nextAction: "Phase 2 compliance dashboard rollout" },
+  { client: "TÜV SÜD", slug: "tuv_sud", sector: "TIC", stage: "At Risk", health: "red", contract: "£150k", users: "10/26", adoption: 40, openIssues: 1, hasBlocking: true, nextAction: "Adoption recovery: on-site sprint" },
+  { client: "Intertek", slug: "intertek", sector: "TIC", stage: "Intake", health: "green", contract: "Scoping", users: "—", adoption: null, openIssues: 0, hasBlocking: false, nextAction: "First meeting March 5" },
+];
+```
+
+### Data fetching utility
+
+Create a shared hook or utility for all API calls:
+
+```typescript
+// Example: useApiData hook
+const API_BASE = "http://localhost:3001";
+const POLL_INTERVAL = 5000;
+
+function useApiData<T>(endpoint: string, fallback: T): { data: T; isLive: boolean } {
+  const [data, setData] = useState<T>(fallback);
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`);
+        if (res.ok) {
+          setData(await res.json());
+          setIsLive(true);
+        }
+      } catch {
+        setIsLive(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, POLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, [endpoint]);
+
+  return { data, isLive };
+}
+```

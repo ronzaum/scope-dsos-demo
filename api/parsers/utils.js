@@ -43,7 +43,8 @@ function splitSections(content, level = 2) {
  */
 function parseKeyValueBullets(content) {
   const result = {};
-  const regex = /^-\s+\*\*([^*]+)\*\*:\s*(.+)$/gm;
+  // Pattern: `- **Key:** Value` — colon is INSIDE the bold markers
+  const regex = /^-\s+\*\*([^*:]+):\*\*\s*(.+)$/gm;
   let match;
 
   while ((match = regex.exec(content)) !== null) {
