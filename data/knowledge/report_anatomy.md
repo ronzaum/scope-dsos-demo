@@ -1,6 +1,6 @@
 # TIC Report Anatomy — Knowledge Base
 # Layer 1: Industry Knowledge
-# Last Updated: 2026-03-02
+# Last Updated: 2026-03-04
 
 ---
 
@@ -116,6 +116,8 @@ Overall condition and professional judgment.
 
 **Pressure Vessels:**
 - Corrosion rate severity + remaining life calculation (quantitative, not categorical)
+
+> **Verification note (2026-03-04):** All classification systems cross-checked against primary regulatory sources. LOLER defect categories (imminent danger / could become danger / no defect), BS 7671 EICR codes (C1/C2/C3/FI), ISO 9001 NC classifications, and pressure vessel remaining-life approach all confirmed accurate. BSEE offshore investigation reports (incident-based, not routine) also reviewed as structural sanity check — our universal report skeleton aligns with real inspection document structure.
 
 > **Key challenge:** Bureau Veritas severity codes differ from Intertek's differ from TÜV's. Even within a single TIC body, classification can drift between offices and inspectors. Normalising across these systems is a core AI value proposition.
 

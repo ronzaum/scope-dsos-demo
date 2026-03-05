@@ -4,11 +4,21 @@
 # Dependencies
 node_modules/
 
-# Sensitive data — client files never committed
-/data/clients/
-
 # Trial day observations — never committed
 /data/friday/trial_log.md
 
 # Audit logs — never committed
 api/logs/
+
+# Generated report outputs — never committed
+/data/outputs/
+
+# Reference reports — visual layout calibration only, never committed
+/data/reference-reports/
+
+# Build artifacts
+frontend/dist/
+
+# Environment files
+.env
+frontend/.env

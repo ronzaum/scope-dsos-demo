@@ -17,11 +17,15 @@ export function AppSidebar() {
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-border bg-sidebar lg:w-56 md:w-14">
       {/* Logo */}
       <div className="flex flex-col px-4 py-5 border-b border-border">
-        <span className="font-mono text-lg font-bold text-foreground tracking-tight md:text-center lg:text-left">
-          <span className="hidden md:inline lg:hidden">DS</span>
-          <span className="md:hidden lg:inline">DS-OS</span>
-        </span>
-        <span className="text-xs text-muted-foreground mt-0.5 hidden lg:block">Scope AI</span>
+        {/* Collapsed: logo only */}
+        <div className="hidden md:flex lg:hidden justify-center">
+          <img src="/logo_scope.png" alt="Scope AI" className="h-8 w-8 rounded" />
+        </div>
+        {/* Expanded: logo + text */}
+        <div className="md:hidden lg:flex items-center gap-2.5">
+          <img src="/logo_scope.png" alt="Scope AI" className="h-7 w-7 rounded shrink-0" />
+          <span className="font-mono text-lg font-bold text-foreground tracking-tight leading-tight">DS-OS</span>
+        </div>
       </div>
 
       {/* Nav */}

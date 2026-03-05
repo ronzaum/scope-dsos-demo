@@ -8,6 +8,20 @@
 
 ---
 
+## Confidence Legend
+
+Each section is tagged with a confidence level indicating how its requirements were derived:
+
+| Tag | Meaning | Source | Expected Client Adjustment |
+|-----|---------|--------|---------------------------|
+| `🟢 Regulatory` | Verified against published standard | API 510, ASME VIII, PSSR 2000, or other cited regulation | Minimal — mandated by regulation |
+| `🟡 Industry Standard` | Common TIC practice, high confidence | Widely adopted across enterprise TIC companies | Low — may vary in format but substance is consistent |
+| `🟠 Inferred` | Reasonable assumption based on domain knowledge | Derived from report anatomy, inspection type patterns, or general best practice | Moderate to high — expect client-specific adjustment on Friday |
+
+Sections tagged `🟠 Inferred` carry a subtle indicator in generated reports so viewers know which parts may need client-specific validation.
+
+---
+
 ## Overview
 
 This is a reference template spec for a pressure vessel in-service inspection per API 510. It is **tool-agnostic** — it defines what data must be captured, in what structure, with what classification system. Once Layer 2 (Scope's tool mechanics) is captured via `/Tool_Setup`, this spec maps onto the actual product configuration.
@@ -19,7 +33,7 @@ This is a reference template spec for a pressure vessel in-service inspection pe
 
 ---
 
-## Section 1: Report Header
+## Section 1: Report Header `🟢 Regulatory` | No changes expected — fields are mandated by API 510 Section 6
 
 
 | Field                     | Type           | Required    | Notes                                                                 |
@@ -47,7 +61,7 @@ This is a reference template spec for a pressure vessel in-service inspection pe
 
 ---
 
-## Section 2: Scope and Limitations
+## Section 2: Scope and Limitations `🟢 Regulatory` | No changes expected — scope documentation required by API 510
 
 
 | Field                   | Type                     | Required    | Notes                                                                      |
@@ -62,7 +76,7 @@ This is a reference template spec for a pressure vessel in-service inspection pe
 
 ---
 
-## Section 3: Methodology
+## Section 3: Methodology `🟡 Industry Standard` | Confirm client's preferred NDT method listing format — field order may vary
 
 
 | Field                  | Type         | Required    | Notes                                                               |
@@ -79,7 +93,7 @@ This is a reference template spec for a pressure vessel in-service inspection pe
 
 ---
 
-## Section 4: Thickness Survey
+## Section 4: Thickness Survey `🟢 Regulatory` | No changes expected — TML measurement fields mandated by API 510 Section 7
 
 This is the core quantitative section. One row per Thickness Monitoring Location (TML).
 
@@ -96,10 +110,10 @@ This is the core quantitative section. One row per Thickness Monitoring Location
 | Short-term corrosion rate (mm/yr) | Calculated      | Auto        | (Previous − Current) ÷ years between readings                                         |
 | Long-term corrosion rate (mm/yr)  | Calculated      | Auto        | (Nominal − Current) ÷ years in service                                                |
 | Remaining life (years)            | Calculated      | Auto        | (Current − Minimum required) ÷ corrosion rate                                         |
-| Status                            | Auto-classified | Auto        | Green (>10yr), Amber (5-10yr), Red (<5yr), Critical (<2yr)                            |
+| Status                            | Auto-classified | Auto        | Green (>10yr), Amber (5-10yr), Red (<5yr), Critical (<2yr) `🟡 Industry Standard — thresholds are common practice, not API 510 prescribed` |
 
 
-**Anomaly detection triggers:**
+**Anomaly detection triggers:** `🟡 Industry Standard`
 
 - Short-term rate >2× long-term rate → flag for investigation
 - Current reading > previous reading → physically impossible, flag calibration/location error
@@ -107,7 +121,7 @@ This is the core quantitative section. One row per Thickness Monitoring Location
 
 ---
 
-## Section 5: Visual Findings
+## Section 5: Visual Findings `🟡 Industry Standard` | Check if client uses finding-per-row or grouped format — photo linkage method may differ
 
 One entry per finding. Findings linked to photographs and measurement data.
 
@@ -130,7 +144,7 @@ One entry per finding. Findings linked to photographs and measurement data.
 
 ---
 
-## Section 6: Safety Devices
+## Section 6: Safety Devices `🟢 Regulatory` | No changes expected — safety device records required by PSSR 2000 and API 510
 
 
 | Field              | Type      | Required    | Notes                                                                                                 |
@@ -145,7 +159,7 @@ One entry per finding. Findings linked to photographs and measurement data.
 
 ---
 
-## Section 7: Fitness-for-Service Assessment
+## Section 7: Fitness-for-Service Assessment `🟢 Regulatory` | No changes expected — FFS fields mandated by API 579
 
 Only required if defects found that bring the vessel outside original design parameters.
 
@@ -162,7 +176,7 @@ Only required if defects found that bring the vessel outside original design par
 
 ---
 
-## Section 8: Conclusions
+## Section 8: Conclusions `🟡 Industry Standard` | Verify client's conclusion format — some require separate recommendation vs conclusion fields
 
 
 | Field                                          | Type      | Required    | Notes                                                                                                                          |
@@ -179,7 +193,7 @@ Only required if defects found that bring the vessel outside original design par
 
 ---
 
-## Section 9: Declarations
+## Section 9: Declarations `🟢 Regulatory` | No changes expected — competent person declaration required by law
 
 
 | Field                        | Type      | Required    | Notes                                              |
@@ -195,7 +209,7 @@ Only required if defects found that bring the vessel outside original design par
 
 ---
 
-## Appendices Checklist
+## Appendices Checklist `🟡 Industry Standard` | Confirm which supporting documents client requires — list may need additions or removals
 
 
 | Appendix                 | Required    | Notes                                            |
@@ -211,7 +225,7 @@ Only required if defects found that bring the vessel outside original design par
 
 ---
 
-## Template Configuration Notes
+## Template Configuration Notes `🟠 Inferred` | Validate entire workflow sequence and automation mapping against client's actual process on Friday
 
 ### Sequence
 

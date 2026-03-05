@@ -30,6 +30,7 @@ Re-runnable. Each run adds more. Flags gaps between claims and reality.
 | They want a template built | `/Template_Spec` | Inspection type + context → full structured spec |
 | They show you an existing report | `/Report_Map` | Reverse-engineers report structure, maps gaps, feeds into Template_Spec |
 | You've built a spec | `/Template_QA` | Quality check: fields, classification, structure, standard compliance |
+| Spec is QA'd, want output | `/Template_Generate` | Generates PPTX + PDF reports from spec. Viewable in frontend |
 | You have 2+ templates | `/Pattern_Check` | Scans for overlaps = scalability signal |
 
 ---

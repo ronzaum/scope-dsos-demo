@@ -33,6 +33,7 @@ The core work commands. Build inspection template specifications.
 | `/Template_Spec` | Main work command. Inspection type + context → structured template spec |
 | `/Report_Map` | Analyse customer's existing report. Map structure. Feeds into Template_Spec |
 | `/Template_QA` | Quality check a template spec (fields, classification, structure, mapping) |
+| `/Template_Generate` | Generate PPTX + PDF reports from a template spec. Calls API, outputs to `/data/outputs/` |
 | `/Pattern_Check` | Scan template library for overlaps and reusable elements. Scalability signal |
 
 ### Category 3: Strategy (Deployment Operations)
@@ -70,7 +71,7 @@ Works across all workflows. Can be run at any point.
 ## Pipeline Flows
 
 **Trial Day:**
-`/Friday_Context` → `/Tool_Setup` (when hands-on) → `/Template_Spec` / `/Report_Map` as needed → `/Template_QA` → `/Pattern_Check`
+`/Friday_Context` → `/Tool_Setup` (when hands-on) → `/Template_Spec` / `/Report_Map` as needed → `/Template_QA` → `/Template_Generate` → `/Pattern_Check`
 
 **New Client:**
 `/Start (new)` → `/Client_Intel` → `/Constraint_Map` → `/Deploy_Plan`
@@ -253,6 +254,14 @@ Plain-English overview: `SECURITY.md` | Technical reference: `api/security/REFER
 
 ---
 
+## Simulated Data Disclaimer
+
+**All client data in `/data/clients/` is fabricated for demonstration purposes.** It was not provided by Scope AI or sourced from actual client engagements. Company profiles (Bureau Veritas, Intertek, TÜV SÜD) use publicly available information; all deployment data, commercial terms, issues, interactions, stakeholder details, and usage metrics are fictional. Each client file carries a visible disclaimer banner.
+
+Similarly, knowledge base files in `/data/knowledge/` were assembled from public sources and general domain knowledge — not from Scope AI's internal documentation.
+
+**The system plumbing is real** — the API reads from markdown files, watches for changes, and the frontend reflects updates. Data created through DS-OS commands (templates, deployment plans, issue logs) is live and persists. Only the seed data is simulated.
+
 ## Simulated Integrations
 
 For the demo, these integrations are simulated via pre-loaded data in client files:
@@ -263,4 +272,4 @@ For the demo, these integrations are simulated via pre-loaded data in client fil
 - **Support tickets** — logged as issues in the issue log
 - **Product usage data** — feature adoption and user counts in deployment state
 
-In production, these would sync automatically. For the demo, the data is real in structure and the system treats it as live.
+In production, these would sync automatically. For the demo, the data is realistic in structure but fictional in content.

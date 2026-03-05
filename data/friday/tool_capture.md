@@ -54,7 +54,7 @@ This file captures Scope's actual tool mechanics during the trial. Layer 1 knowl
 ### How Reports Are Generated
 - **Trigger (auto vs manual):**
 - **Input data source:**
-- **Output format (PDF, Word, other):**
+- **Output format (PDF, Word, other):** PowerPoint (confirmed) — editable PPTX + PDF preview. Mechanics TBC on Friday
 - **Branding/formatting options:**
 - **Regulatory format selection:**
 

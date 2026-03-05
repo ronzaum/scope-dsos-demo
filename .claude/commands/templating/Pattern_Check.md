@@ -76,6 +76,37 @@ This ratio is the scalability signal. Higher repeatable core = more automation p
 
 ---
 
+## Step 3.5: Write Pattern Analysis File
+
+Write the full analysis to `/data/templates/_pattern_analysis.md` in this exact structure (the API parses this file):
+
+```markdown
+# Pattern Analysis
+# Generated: [YYYY-MM-DD]
+
+## Overlap Map
+
+| Pattern | Templates | Match Level |
+|---------|-----------|-------------|
+| [shared section/field] | [template A, template B] | [Identical/Similar] |
+
+## Reusable Elements
+
+| Element | Count | Templates |
+|---------|-------|-----------|
+| [field cluster name] | [N templates] | [list] |
+
+## Scalability Signals
+
+| Template | Reusable % | Bespoke Fields |
+|----------|-----------|----------------|
+| [template name] | [XX%] | [N fields unique to this template] |
+```
+
+This file is auto-parsed by the API and displayed in the frontend dashboard. It updates every time this command runs.
+
+---
+
 ## Step 4: Update Pattern Index
 
 Update the "Patterns & Overlaps" section of `/data/templates/_template_index.md`:

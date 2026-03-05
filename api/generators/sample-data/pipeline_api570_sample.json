@@ -1,0 +1,393 @@
+{
+  "_meta": {
+    "disclaimer": "DEMONSTRATION — Simulated Inspection Data. This data is entirely fabricated for demonstration purposes. It does not represent any real pipeline, facility, or inspection.",
+    "templateSlug": "pipeline_api570",
+    "generatedFor": "DS-OS Report Generator Demo — Bureau Veritas Pipeline Expansion",
+    "version": "1.0.0"
+  },
+
+  "header": {
+    "reportNumber": "BV-2026-00203",
+    "dateOfExamination": "2026-03-01",
+    "dateOfReport": "2026-03-04",
+    "clientName": "Grangemouth Petrochemicals Ltd (Bureau Veritas inspection)",
+    "siteName": "Grangemouth Processing Complex",
+    "siteAddress": "Bo'ness Road, Grangemouth, FK3 9XQ, Scotland",
+    "pipelineCircuitId": "PC-2401",
+    "lineNumber": "6\"-HC-2401-A1A-HT",
+    "serviceDescription": "Lean Amine — Diethanolamine (DEA) 25 wt%, 45°C operating",
+    "pipeSpecification": "6\" Sch.40, ASTM A106 Gr.B, seamless",
+    "designCode": "ASME B31.3",
+    "designPressure": 15.0,
+    "designTemperature": 120,
+    "operatingPressure": 8.5,
+    "operatingTemperature": 45,
+    "materialOfConstruction": "ASTM A106 Gr.B (carbon steel)",
+    "yearOfInstallation": 2006,
+    "insulationType": "Calcium silicate",
+    "inspectorName": "Alan McGregor",
+    "inspectorQualification": "API 570 Certified, Certificate #72891, CSWIP 3.1 UT",
+    "examinationType": "On-Stream",
+    "wseReference": "WSE/GPC/2026/0147",
+    "previousReportReference": "BV-2023-00156",
+    "equipmentDescription": "6\" Lean Amine Circuit PC-2401 — Amine Regenerator to Absorber"
+  },
+
+  "scopeAndLimitations": {
+    "circuitDescription": "Lean amine return line from Amine Regenerator T-2402 to Amine Absorber V-2401-A. Total circuit length approximately 185m including 12 elbows, 3 tees, 2 reducers, and 1 dead leg. Elevated pipe rack (6m) and at-grade sections.",
+    "areasExamined": [
+      "All 16 CML locations per circuit inspection plan",
+      "Injection point IP-2401 (corrosion inhibitor) and 1m downstream",
+      "Dead leg DL-2401 (disused chemical injection, capped)",
+      "8 CUI suspect locations (insulation stripped for inspection)",
+      "All pipe supports within circuit boundary (12 supports)",
+      "Flanged connections at T-2402 outlet and V-2401-A inlet"
+    ],
+    "areasNotExamined": [
+      "Section between supports S-07 and S-09 (over active roadway — traffic management not available during inspection window)"
+    ],
+    "examinationLimitations": "On-stream inspection — internal visual not possible. All thickness readings taken externally through cleaned surface. Insulation removed at 8 CUI suspect locations only; remainder of insulation left in place.",
+    "accessMethod": "Cherry picker",
+    "insulationRemoved": true,
+    "insulationRemovalExtent": "8 locations — CUI suspect areas identified from previous inspection, plus 2 new locations at pipe support interfaces where jacketing damage observed",
+    "surfacePreparation": "Power tool cleaned"
+  },
+
+  "methodology": {
+    "visualExamination": true,
+    "ultrasonicThickness": true,
+    "utInstrument": "Olympus 38DL PLUS, S/N UT-2025-0834, Cal due 2026-09-22",
+    "utProbe": "D797-SM, 5MHz, 6mm diameter, dual-element",
+    "calibrationBlock": "4-step (3.0/6.0/9.0/12.0mm), A106 Gr.B, Cert #CAL-2026-0118",
+    "radiographicTesting": false,
+    "rtDetails": null,
+    "additionalNdtMethods": ["DPT", "Pulsed Eddy Current"],
+    "additionalNdtDetails": "DPT applied to weld toe at injection point IP-2401 per procedure NDT-WI-DPT-004 Rev.3. Pulsed Eddy Current (PEC) screening at 4 CUI suspect locations where UT access limited by geometry — Silverwing RMS2 system, procedure NDT-WI-PEC-001 Rev.2.",
+    "referenceProcedures": "WI-UT-001 Rev.7, WI-VT-003 Rev.5, NDT-WI-DPT-004 Rev.3, NDT-WI-PEC-001 Rev.2"
+  },
+
+  "thicknessSurvey": [
+    {
+      "tmlId": "CML-001",
+      "description": "Straight run, 6 o'clock, 2m from T-2402 outlet flange",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 6.72,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.48,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-002",
+      "description": "Elbow E-01 (first bend), extrados, 6 o'clock",
+      "componentType": "Elbow",
+      "nominalThickness": 7.11,
+      "previousReading": 6.51,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.22,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-003",
+      "description": "Straight run, 6 o'clock, at pipe support S-02",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 6.80,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.58,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-004",
+      "description": "Tee T-01 (branch to V-2401-B), run through, 6 o'clock",
+      "componentType": "Tee",
+      "nominalThickness": 7.11,
+      "previousReading": 6.44,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.10,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-005",
+      "description": "Dead leg DL-2401 (capped), 6 o'clock, 150mm from cap weld",
+      "componentType": "Dead leg",
+      "nominalThickness": 7.11,
+      "previousReading": 6.20,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 5.78,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-006",
+      "description": "Elbow E-03, extrados, 6 o'clock — downstream of injection point IP-2401",
+      "componentType": "Elbow",
+      "nominalThickness": 7.11,
+      "previousReading": 6.10,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 5.55,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-007",
+      "description": "Injection point IP-2401, 6 o'clock, at injection quill location",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 5.95,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 5.38,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-008",
+      "description": "Straight run, 12 o'clock, 1m downstream of IP-2401",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 6.30,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 5.92,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-009",
+      "description": "Elbow E-05, extrados, 3 o'clock — pipe rack descent",
+      "componentType": "Elbow",
+      "nominalThickness": 7.11,
+      "previousReading": 6.60,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.35,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-010",
+      "description": "Reducer R-01 (6\" to 4\"), large end, 6 o'clock",
+      "componentType": "Reducer",
+      "nominalThickness": 7.11,
+      "previousReading": 6.75,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.52,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-011",
+      "description": "Straight run, 6 o'clock, at pipe support S-08 (CUI suspect)",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 6.40,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 5.90,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-012",
+      "description": "Elbow E-08, extrados, 6 o'clock — approach to V-2401-A",
+      "componentType": "Elbow",
+      "nominalThickness": 7.11,
+      "previousReading": 6.55,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.30,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-013",
+      "description": "Straight run, 6 o'clock, 3m from V-2401-A inlet flange",
+      "componentType": "Straight run",
+      "nominalThickness": 7.11,
+      "previousReading": 6.68,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.44,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-014",
+      "description": "Branch connection BC-01 (2\" drain), main run 6 o'clock",
+      "componentType": "Branch connection",
+      "nominalThickness": 7.11,
+      "previousReading": 6.50,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.21,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-015",
+      "description": "Elbow E-10, intrados, 6 o'clock — low point of circuit",
+      "componentType": "Elbow",
+      "nominalThickness": 7.11,
+      "previousReading": 6.38,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 6.05,
+      "minimumRequired": 3.96
+    },
+    {
+      "tmlId": "CML-016",
+      "description": "Valve body VLV-2401 (gate valve), downstream side",
+      "componentType": "Valve body",
+      "nominalThickness": 9.53,
+      "previousReading": 9.10,
+      "previousReadingDate": "2023-03-15",
+      "currentReading": 8.82,
+      "minimumRequired": 6.35
+    }
+  ],
+
+  "visualFindings": [
+    {
+      "findingId": "F-001",
+      "location": "Injection point IP-2401, 4–8 o'clock arc, at and immediately downstream of injection quill",
+      "findingType": "Injection point corrosion",
+      "description": "Localised thinning at injection point IP-2401 where corrosion inhibitor (filming amine) is injected into the lean amine stream. External surface shows no distress but UT readings at CML-007 confirm accelerating wall loss (0.190 mm/yr short-term vs 0.087 mm/yr long-term). Pattern consistent with injection point corrosion per API 570 Section 7.1.5. Downstream elbow E-03 (CML-006) also showing elevated rates.",
+      "severity": "Requires action (specify timeframe)",
+      "dimensions": "300mm zone centred on injection quill, circumferential coverage 4–8 o'clock",
+      "photographReference": "IMG_2026-0301_001.jpg, IMG_2026-0301_002.jpg",
+      "acceptanceCriteria": "API 570 Section 7.1.5 — injection point inspection requirements; ASME B31.3 minimum wall thickness",
+      "recommendation": "Increase inspection frequency at CML-007 to annual. Review injection quill design — current single-point injection may be creating impingement. Consider quill extension or multi-port distribution. Corrosion engineer to review inhibitor concentration and injection rate.",
+      "timeframe": "Within 30 days",
+      "ndtFollowUpRequired": true,
+      "ndtMethodRecommended": "PAUT"
+    },
+    {
+      "findingId": "F-002",
+      "location": "Pipe support S-08, insulation interface, 5–7 o'clock arc",
+      "findingType": "CUI",
+      "description": "Corrosion under insulation at pipe support S-08 interface. Insulation stripped to reveal moderate external wall loss over approximately 200mm length. Surface pitting and general metal loss consistent with trapped moisture at support/insulation interface. Jacketing was damaged at this location (torn and displaced). UT reading at CML-011 (5.90mm) is 0.50mm below expected trend, confirming external CUI contribution to total wall loss.",
+      "severity": "Requires action (specify timeframe)",
+      "dimensions": "200mm × 120mm area at support interface, max pit depth 0.8mm from external surface",
+      "photographReference": "IMG_2026-0301_003.jpg, IMG_2026-0301_004.jpg",
+      "acceptanceCriteria": "API 570 Section 7.2 — external inspection; minimum wall thickness per ASME B31.3",
+      "recommendation": "Repair jacketing at S-08. Apply protective coating (zinc-rich primer + epoxy topcoat) to bare metal before re-insulating. Add CML-011 to CUI monitoring programme. Consider full insulation strip at S-07 and S-09 during next shutdown to assess extent of CUI in this section.",
+      "timeframe": "Before next examination",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    },
+    {
+      "findingId": "F-003",
+      "location": "Dead leg DL-2401 (capped, disused chemical injection), full circumference",
+      "findingType": "General corrosion",
+      "description": "Capped dead leg DL-2401 (previously used for caustic injection, capped in 2018) showing higher than average corrosion rate. CML-005 reading (5.78mm) with 0.140 mm/yr short-term rate vs circuit average of 0.092 mm/yr. Dead leg operates at lower velocity and may trap corrosive species. No external distress but internal wall loss consistent with stagnant amine corrosion.",
+      "severity": "Acceptable (monitor)",
+      "dimensions": "Full bore dead leg, 400mm from cap to main run",
+      "photographReference": "IMG_2026-0301_005.jpg",
+      "acceptanceCriteria": "API 570 Section 7.1.3 — dead leg inspection; remaining wall above minimum required",
+      "recommendation": "Continue monitoring at current CML location. If rate continues to accelerate, evaluate removal of dead leg during next turnaround. Dead leg removal eliminates the monitoring burden and the corrosion source.",
+      "timeframe": "Before next examination",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    },
+    {
+      "findingId": "F-004",
+      "location": "Pipe support S-04, support shoe, external",
+      "findingType": "Support failure",
+      "description": "Pipe support S-04 shoe welded directly to pipe (no wear pad). Support shoe showing 3mm wear groove on pipe surface from thermal movement. Groove depth confirmed by UT profile scan. Not affecting pressure integrity but creating a stress concentration point.",
+      "severity": "Acceptable (monitor)",
+      "dimensions": "3mm groove depth, 25mm width, 80mm length along pipe axis",
+      "photographReference": "IMG_2026-0301_006.jpg",
+      "acceptanceCriteria": "Support design standard — wear pad requirement for high-temperature service",
+      "recommendation": "Install wear pad at next shutdown opportunity. Monitor groove depth at each inspection. No immediate structural concern — groove is in non-pressurised direction.",
+      "timeframe": "Advisory",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    }
+  ],
+
+  "cuiAssessment": {
+    "cuiAssessmentPerformed": true,
+    "locationsInspected": 8,
+    "cuiFindings": [
+      {
+        "location": "Pipe support S-08 interface",
+        "cuiFound": true,
+        "cuiSeverity": "Moderate (measurable wall loss)",
+        "affectedAreaDescription": "200mm × 120mm zone at support/insulation interface, 5–7 o'clock. Moderate pitting and general corrosion on external surface. Water ingress path: damaged jacketing allowing rain penetration",
+        "wallLoss": 0.8,
+        "insulationCondition": "Damaged (localised)",
+        "jacketingCondition": "Damaged",
+        "sealantCondition": "Missing",
+        "photographReference": "IMG_2026-0301_003.jpg",
+        "recommendation": "Repair jacketing, apply protective coating, re-insulate. Add to CUI monitoring programme"
+      },
+      {
+        "location": "Elbow E-05, bottom of elbow",
+        "cuiFound": true,
+        "cuiSeverity": "Light surface rust",
+        "affectedAreaDescription": "Light surface rust on external surface at bottom of elbow E-05. No measurable wall loss. Moisture pooling under insulation at low point",
+        "wallLoss": 0,
+        "insulationCondition": "Good",
+        "jacketingCondition": "Good",
+        "sealantCondition": "Cracked",
+        "photographReference": "IMG_2026-0301_007.jpg",
+        "recommendation": "Reseal jacketing joint at elbow low point. Apply rust inhibitor to surface. Re-inspect at next examination"
+      },
+      {
+        "location": "Pipe support S-03 interface",
+        "cuiFound": false,
+        "cuiSeverity": "None",
+        "affectedAreaDescription": "No corrosion found. Surface in good condition. Insulation and jacketing intact",
+        "wallLoss": 0,
+        "insulationCondition": "Good",
+        "jacketingCondition": "Good",
+        "sealantCondition": "Good",
+        "photographReference": null,
+        "recommendation": "No action required"
+      }
+    ]
+  },
+
+  "injectionPointAssessment": {
+    "injectionPointPresent": true,
+    "injectionType": "Chemical injection",
+    "injectionChemical": "Filming amine corrosion inhibitor (Nalco EC1018A)",
+    "downstreamInspectionExtent": "1m downstream of injection quill (exceeds API 570 minimum of 12\" or 3× pipe diameter)",
+    "corrosionPattern": "Localised pitting",
+    "cmlReadingsAtInjectionPoint": "CML-007 (at quill), CML-006 (downstream elbow E-03), CML-008 (1m downstream straight)",
+    "recommendation": "CML-007 showing injection point corrosion pattern — 0.190 mm/yr ST rate, 2.2× circuit average. Review quill design and injection parameters. Increase monitoring to annual at CML-006, CML-007, CML-008"
+  },
+
+  "safetyDevices": [
+    {
+      "deviceType": "Pressure relief valve (PRV)",
+      "deviceId": "PSV-2401-L1",
+      "setPressure": 16.5,
+      "lastTestDate": "2025-10-14",
+      "testResult": "Satisfactory",
+      "notes": "Set pressure confirmed at 16.5 bar (110% design). Bench tested per API 576. Lift and reseat clean."
+    },
+    {
+      "deviceType": "Emergency isolation valve (EIV)",
+      "deviceId": "XV-2401-01",
+      "setPressure": null,
+      "lastTestDate": "2026-01-22",
+      "testResult": "Satisfactory",
+      "notes": "Full stroke test completed. Close time 8 seconds (specification: <15 seconds). Seat leak test passed."
+    }
+  ],
+
+  "fitnessForService": {
+    "ffsRequired": false,
+    "assessmentMethod": null,
+    "defectTypeAssessed": null,
+    "result": null,
+    "conditionsForContinuedService": null,
+    "assessmentReference": null
+  },
+
+  "conclusions": {
+    "overallCondition": "Satisfactory with observations",
+    "safeToContinue": true,
+    "conditionsForContinuedService": "Subject to: (1) Injection point corrosion monitoring — increase CML-006, CML-007, CML-008 to annual frequency, (2) CUI repair at pipe support S-08 — jacketing repair and coating before next winter season, (3) Next on-stream examination in 3 years per API 570 RBI assessment",
+    "statutoryReportRaised": true,
+    "statutoryReportRef": "PSSR/GPC/2026/0147",
+    "summaryOfCriticalFindings": "Four findings recorded across circuit PC-2401. Two require action: (F-001) injection point corrosion at IP-2401 showing accelerating rates — quill design review within 30 days; (F-002) CUI at pipe support S-08 with moderate wall loss — repair before next winter. Two acceptable for monitoring: (F-003) dead leg DL-2401 with elevated but stable corrosion rate; (F-004) support shoe wear at S-04, non-critical. Overall circuit health: 14 of 16 CMLs showing stable corrosion rates within expected range for lean amine service. Injection point zone (CMLs 006-008) requires enhanced monitoring. No immediate integrity concerns — all readings above minimum required thickness with adequate remaining life.",
+    "nextExaminationType": "On-Stream",
+    "nextExaminationDate": "2029-03-01",
+    "recommendedIntervalJustification": "3-year interval selected based on API 570 risk-based inspection methodology: (1) Injection point CML-007 remaining life 7.5 years at current rate — 3-year interval provides safety factor >2, (2) Worst-case remaining life across circuit is CML-007 at 7.5 years, (3) Circuit classification: Class 2 (amine service, moderate corrosion), (4) Annual monitoring at injection point CMLs provides early warning between full circuit inspections."
+  },
+
+  "declarations": {
+    "competentPersonDeclaration": true,
+    "accreditationStatement": "Bureau Veritas UK Ltd, UKAS Accreditation No. 0075, ISO/IEC 17020:2012 Type A Inspection Body",
+    "independenceDeclaration": true,
+    "inspectorName": "Alan McGregor",
+    "dateSigned": "2026-03-04",
+    "technicalReviewer": "Emma Walsh, Senior Integrity Engineer, API 570/574 Certified",
+    "reviewerDateSigned": "2026-03-04"
+  }
+}

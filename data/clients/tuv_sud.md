@@ -1,5 +1,7 @@
 # TÜV SÜD
 
+> **SIMULATED DATA** — This client file contains fabricated demo data. It was not provided by Scope AI or sourced from actual client engagements. Company details are based on publicly available information; all deployment data, commercial terms, issues, interactions, and stakeholder details are fictional and created for demonstration purposes only.
+
 ## Profile
 - **Sector:** Testing, Inspection, Certification (TIC). German market leader, global top 5
 - **Size:** 26,000+ employees, ~5,000 inspectors, operations in 50+ countries
@@ -10,6 +12,7 @@
 - **Date created:** 2025-09-10
 
 ## Commercial
+- **Pipeline stage:** Active
 - **Contract status:** Active — at risk
 - **Contract value:** £150,000 annual
 - **Term:** 12 months (started 2025-09-25)
@@ -28,6 +31,9 @@
 - **Users:** 20 inspectors (only 8 active daily — 40% adoption), 4 supervisors (2 active), 2 compliance leads (0 active)
 - **Adoption:** 40% daily active. Target was 85% by month 4. MISSED
 - **Baseline improvement:** 18% reduction in documentation time (target: 50%). Significantly below target
+- **Adoption by type:**
+  - Report generation: 45% (9/20 users)
+  - Anomaly detection: 15% (3/20 users)
 
 ## Constraint Map
 

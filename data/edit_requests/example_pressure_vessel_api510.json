@@ -1,0 +1,20 @@
+[
+  {
+    "id": "EDIT-EXAMPLE_-1",
+    "slug": "example_pressure_vessel_api510",
+    "templateName": "Pressure Vessel Inspection (API 510)",
+    "body": "Template \"Pressure Vessel Inspection (API 510)\" has 5 sections requiring review:\n\n🟡 Section 3: Methodology (Industry Standard)\n   Problem: Confirm client's preferred NDT method listing format — field order\n   Action: Confirm Methodology format with client\n   Success: Client confirms Methodology fields match their process\n\n🟡 Section 5: Visual Findings (Industry Standard)\n   Problem: Check if client uses finding-per-row or grouped format — photo\n   Action: Confirm Visual Findings format with client\n   Success: Client confirms Visual Findings fields match their process\n\n🟡 Section 8: Conclusions (Industry Standard)\n   Problem: Verify client's conclusion format — some require separate recommendation vs\n   Action: Confirm Conclusions format with client\n   Success: Client confirms Conclusions fields match their process\n\n🟡 Appendices Checklist (Industry Standard)\n   Problem: Confirm which supporting documents client requires — list may need\n   Action: Confirm Appendices Checklist format with client\n   Success: Client confirms Appendices Checklist fields match their process\n\n🟠 Template Configuration Notes (Inferred)\n   Problem: Validate entire workflow sequence and automation mapping against client's actual\n   Action: Validate Template Configuration Notes against client's actual workflow\n   Success: Fields verified on-site and updated",
+    "comment": "make sure its all green before sending",
+    "status": "open",
+    "createdAt": "2026-03-05T12:26:54.016Z"
+  },
+  {
+    "id": "EDIT-EXAMPLE_-2",
+    "slug": "example_pressure_vessel_api510",
+    "templateName": "Pressure Vessel Inspection (API 510)",
+    "body": "Template \"Pressure Vessel Inspection (API 510)\" has 5 sections requiring review:\n\n🟡 Section 3: Methodology (Industry Standard)\n   Problem: Confirm client's preferred NDT method listing format — field order\n   Action: Confirm Methodology format with client\n   Success: Client confirms Methodology fields match their process\n\n🟡 Section 5: Visual Findings (Industry Standard)\n   Problem: Check if client uses finding-per-row or grouped format — photo\n   Action: Confirm Visual Findings format with client\n   Success: Client confirms Visual Findings fields match their process\n\n🟡 Section 8: Conclusions (Industry Standard)\n   Problem: Verify client's conclusion format — some require separate recommendation vs\n   Action: Confirm Conclusions format with client\n   Success: Client confirms Conclusions fields match their process\n\n🟡 Appendices Checklist (Industry Standard)\n   Problem: Confirm which supporting documents client requires — list may need\n   Action: Confirm Appendices Checklist format with client\n   Success: Client confirms Appendices Checklist fields match their process\n\n🟠 Template Configuration Notes (Inferred)\n   Problem: Validate entire workflow sequence and automation mapping against client's actual\n   Action: Validate Template Configuration Notes against client's actual workflow\n   Success: Fields verified on-site and updated",
+    "comment": null,
+    "status": "open",
+    "createdAt": "2026-03-05T12:30:54.235Z"
+  }
+]

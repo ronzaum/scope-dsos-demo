@@ -1,0 +1,92 @@
+{
+  "_meta": {
+    "name": "Default Professional",
+    "description": "Professional dark blue/white theme. Swappable — replace with client or Scope branding on Friday.",
+    "version": "1.0.0"
+  },
+
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "unit": "inches"
+  },
+
+  "colors": {
+    "primary": "1B2A4A",
+    "secondary": "2E5090",
+    "accent": "3B82F6",
+    "background": "FFFFFF",
+    "headerBg": "1B2A4A",
+    "headerText": "FFFFFF",
+    "bodyText": "1E293B",
+    "mutedText": "64748B",
+    "tableBorder": "CBD5E1",
+    "tableHeaderBg": "1B2A4A",
+    "tableHeaderText": "FFFFFF",
+    "tableStripeBg": "F1F5F9",
+    "disclaimerBg": "FEF3C7",
+    "disclaimerText": "92400E",
+    "confidenceInferred": "F59E0B",
+    "confidenceIndustry": "EAB308",
+    "confidenceRegulatory": "22C55E"
+  },
+
+  "rag": {
+    "green":    { "fill": "DCFCE7", "text": "166534", "label": "Green (>10yr)" },
+    "amber":    { "fill": "FEF9C3", "text": "854D0E", "label": "Amber (5–10yr)" },
+    "red":      { "fill": "FEE2E2", "text": "991B1B", "label": "Red (<5yr)" },
+    "critical": { "fill": "7F1D1D", "text": "FFFFFF", "label": "Critical (<2yr)" }
+  },
+
+  "fonts": {
+    "heading": "Calibri",
+    "body": "Calibri",
+    "mono": "Consolas"
+  },
+
+  "fontSizes": {
+    "slideTitle": 24,
+    "sectionTitle": 18,
+    "body": 11,
+    "small": 9,
+    "tableHeader": 10,
+    "tableBody": 9,
+    "footer": 7,
+    "disclaimer": 10
+  },
+
+  "layout": {
+    "marginLeft": 0.5,
+    "marginRight": 0.5,
+    "marginTop": 0.4,
+    "marginBottom": 0.6,
+    "headerHeight": 1.0,
+    "footerHeight": 0.35,
+    "contentGap": 0.2
+  },
+
+  "logo": {
+    "enabled": true,
+    "path": null,
+    "placeholder": true,
+    "width": 1.5,
+    "height": 0.5,
+    "position": { "x": 11.3, "y": 0.25 }
+  },
+
+  "findingLayout": "one-per-slide",
+
+  "photoPlaceholder": {
+    "width": 5.0,
+    "height": 3.5,
+    "fillColor": "E2E8F0",
+    "borderColor": "94A3B8",
+    "label": "[Photograph]"
+  },
+
+  "watermark": {
+    "text": "SIMULATED DATA",
+    "fontSize": 7,
+    "color": "CBD5E1"
+  }
+}

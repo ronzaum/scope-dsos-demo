@@ -1,5 +1,7 @@
 # Intertek
 
+> **SIMULATED DATA** — This client file contains fabricated demo data. It was not provided by Scope AI or sourced from actual client engagements. Company details are based on publicly available information; all deployment data, commercial terms, issues, interactions, and stakeholder details are fictional and created for demonstration purposes only.
+
 ## Profile
 - **Sector:** Testing, Inspection, Certification (TIC). Third-largest globally
 - **Size:** 44,000+ employees, ~8,000 inspectors, operations in 100+ countries
@@ -10,12 +12,13 @@
 - **Date created:** 2026-02-20
 
 ## Commercial
+- **Pipeline stage:** Prospect
 - **Contract status:** Scoping
 - **Estimated value:** £180,000 annual (consumer products pilot). Expansion potential £500k+ if cross-divisional
 - **Timeline:** Aiming for pilot start Q2 2026
 - **Economic buyer:** TBD — likely VP Operations or Divisional MD
 - **Success criteria:** TBD — to be defined in first workshop
-- **Expansion potential:** Consumer products → building & construction → energy (three divisions with overlapping inspection logic)
+- **Expansion potential:** £500,000
 
 ## Deployment State
 - **Stage:** Intake

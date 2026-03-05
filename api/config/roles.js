@@ -16,19 +16,30 @@ const endpointAccess = {
   ds: [
     'health', 'overview', 'clients', 'client_detail',
     'playbook', 'methods', 'system_log', 'audit',
+    'templates', 'template_detail', 'template_patterns',
+    'template_generate', 'template_output',
+    'core_blocks', 'core_blocks_write',
+    'knowledge', 'knowledge_section',
   ],
   fde: [
     'health', 'overview', 'clients', 'client_detail',
-    'methods', 'system_log',
+    'methods', 'system_log', 'templates', 'template_detail',
+    'template_generate', 'template_output',
+    'core_blocks',
+    'knowledge', 'knowledge_section',
   ],
   ae: [
     'health', 'overview', 'clients', 'client_detail',
+    'knowledge', 'knowledge_section',
   ],
   leadership: [
-    'health', 'overview', 'clients', 'playbook',
+    'health', 'overview', 'clients', 'playbook', 'templates',
+    'core_blocks',
+    'knowledge', 'knowledge_section',
   ],
   view_only: [
     'health', 'overview',
+    'knowledge', 'knowledge_section',
   ],
 };
 
@@ -43,6 +54,17 @@ const routeMap = {
   'GET /api/methods':      'methods',
   'GET /api/system/log':   'system_log',
   'GET /api/audit':        'audit',
+  'GET /api/templates':    'templates',
+  'GET /api/templates/:slug': 'template_detail',
+  'GET /api/templates/patterns': 'template_patterns',
+  'GET /api/templates/core-blocks': 'core_blocks',
+  'POST /api/templates/core-blocks': 'core_blocks_write',
+  'PUT /api/templates/core-blocks/:name': 'core_blocks_write',
+  'DELETE /api/templates/core-blocks/:name': 'core_blocks_write',
+  'POST /api/templates/:slug/generate': 'template_generate',
+  'GET /api/templates/:slug/output': 'template_output',
+  'GET /api/knowledge':              'knowledge',
+  'GET /api/knowledge/:section':     'knowledge_section',
 };
 
 // --- Per-role field visibility for client detail ---

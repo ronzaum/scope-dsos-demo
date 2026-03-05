@@ -1,62 +1,59 @@
-# FE-023: Playbook → Field Notes Refactor
+# FE-015: Deploy DS-OS as a Shareable URL
 
-**Overall Progress:** `100%`
+**Overall Progress:** `100% (Group A)`
 
-Addresses `issues/023-field-notes-refactor.md` | Linear: RON-32
+Addresses `issues/015-deploy-shareable-url.md` | Linear: RON-20
 
 ## TLDR
 
-Rename the "Playbook" page to "Field Notes" with a Footprints icon. Remove decorative sections (Operational Rules, Cross-Client Comparison chart). Move reference content (Client Type Definitions, Client Type Insights) to TIC Playbook. Surface the Metrics Benchmarks table that's already parsed but never rendered. Add source-to-client links and last-updated timestamps on pattern cards.
+Deploy DS-OS to a public URL on Render (free tier) so Scope can interact with it directly. Single Express process serves both the API and the built frontend. Password gate (`complianceismypassion`) on entry. Public GitHub repo so they can browse the source. UptimeRobot pings `/api/health` every 14 minutes to prevent cold starts.
 
 ## Critical Decisions
 
-- **"Field Notes" as name** — distinct from "TIC Playbook", grounded in deployment experience rather than industry reference
-- **Footprints icon** — visually unique in the sidebar, reinforces field/ground-truth connotation
-- **Client Type data moves to Knowledge API** — rather than fetching from playbook API on the Knowledge page, move the data to `/api/knowledge` response so TIC Playbook gets it natively
-- **Cross-Client Comparison chart removed entirely** — it duplicates Overview data. Not relocated, just removed from Field Notes
-- **Route changes from `/playbook` to `/field-notes`** — clean break, low risk for demo app
+- **Single service** — Express serves `frontend/dist/` static files alongside `/api/*` routes. One process, one port, no CORS needed. Simplest possible deployment.
+- **Public repo** — all data is simulated with disclaimer banners, secrets are gitignored. Scope seeing the code is a feature, not a risk.
+- **Client-side password gate** — not a security boundary, just access control. `sessionStorage` so it persists per tab. Wraps the entire app before `AuthProvider` mounts.
+- **UptimeRobot keep-alive** — free service pings health endpoint every 14min, Render never sleeps. 750 free hours/month = 31 days, cannot be exceeded by a single service.
 
 ## Execution Groups
 
-**Group A: Rename + Clean Up Field Notes** — Sidebar rename, icon swap, route change, remove Operational Rules and Cross-Client chart, add Metrics Benchmarks table, add source links and timestamps. Steps 1-5.
+**Group A: Code Changes** — Make the codebase deploy-ready. Express static serving, password gate, gitignore update, env config, render.yaml. Steps 1-5.
 
-**Group B: Move Client Type Sections to TIC Playbook** — Extend Knowledge API to include client type data from playbook files, render in TIC Playbook page, remove from Field Notes. Steps 6-8.
+**Group B: Deploy** — Push to GitHub, connect Render, set up UptimeRobot. Steps 6-7. These are manual platform tasks, not code — listed here for completeness but executed outside `/dev:execute`.
+
+Dependencies: B requires A to be complete (code must be ready before pushing/deploying).
 
 ## Tasks
 
-### Group A: Rename + Clean Up Field Notes
+### Group A: Code Changes
 
-- [x] 🟩 **Step 1: Rename sidebar entry and swap icon**
-  - [x] 🟩 In `frontend/src/components/AppSidebar.tsx`: change `title: "Playbook"` to `title: "Field Notes"`, change `path: "/playbook"` to `path: "/field-notes"`, replace `BookOpen` import with `Footprints`
+- [x] 🟩 **Step 1: Express serves frontend static files**
+  - [x] 🟩 In `api/server.js`, after the last `/api/*` route and before `app.listen()`, add `express.static()` middleware pointing at `path.resolve(__dirname, '..', 'frontend', 'dist')`
+  - [x] 🟩 Add catch-all `app.get('*')` route below the static middleware that sends `frontend/dist/index.html` — this handles React Router client-side routing (e.g. `/clients/bureau_veritas` loads the SPA, not a 404)
 
-- [x] 🟩 **Step 2: Update route in App.tsx**
-  - [x] 🟩 In `frontend/src/App.tsx`: change the Playbook route path from `/playbook` to `/field-notes`
+- [x] 🟩 **Step 2: Production env for frontend**
+  - [x] 🟩 Create `frontend/.env.production` with `VITE_API_BASE=` (empty string — same-origin requests when served from Express)
 
-- [x] 🟩 **Step 3: Update page title, subtitle, and remove decorative sections**
-  - [x] 🟩 In `frontend/src/pages/Playbook.tsx` (or rename file to `FieldNotes.tsx`): change h1 to "Field Notes", subtitle to "Lessons from the field — what worked, what didn't, what to do next"
-  - [x] 🟩 Remove the Operational Rules accordion (the `rules` state, the `expandedRule` state, and the entire `{rules.length > 0 && ...}` block inside the Method Registry section)
-  - [x] 🟩 Remove the Cross-Client Comparison chart section (the `overviewData` fetch, the `CrossClientComparison` import, and the entire `{overviewData.deployments && ...}` block)
-  - [x] 🟩 Remove the Cross-Client Insights section (Client Type Insights and Client Type Definitions blocks) — these move to TIC Playbook in Group B
+- [x] 🟩 **Step 3: Password gate component**
+  - [x] 🟩 Create `frontend/src/components/AccessGate.tsx` — full-screen centered card with a single text input ("Enter access code") and a submit button
+  - [x] 🟩 On submit, compare input to the string `complianceismypassion`. If match, write `dsos-access=true` to `sessionStorage` and render children. If wrong, show inline error text
+  - [x] 🟩 On mount, check `sessionStorage` for `dsos-access=true` — if present, skip the gate and render children immediately
+  - [x] 🟩 In `frontend/src/App.tsx`, wrap the entire existing JSX tree with `<AccessGate>...</AccessGate>` so it sits outside `AuthProvider` — no API calls fire until the code is entered
 
-- [x] 🟩 **Step 4: Add Metrics Benchmarks table**
-  - [x] 🟩 In `frontend/src/pages/Playbook.tsx`: the API already returns `metricsBenchmarks` (parsed in `api/parsers/playbook.js` from the table in `deployment_playbook.md`). Render it as a table section after Resolution Patterns. Columns: Metric, one column per client, Target. Same table styling as Method Registry
-  - [x] 🟩 Update `frontend/src/data/fallbacks.ts`: add `metricsBenchmarks` array to `FALLBACK_PLAYBOOK` matching the 4-row table in `data/playbook/deployment_playbook.md`
+- [x] 🟩 **Step 4: Un-gitignore client data**
+  - [x] 🟩 Remove the `/data/clients/` line from `.gitignore`
+  - [x] 🟩 Verify all 3 client files (`bureau_veritas.md`, `intertek.md`, `tuv_sud.md`) have the `> **SIMULATED DATA**` disclaimer banner at the top
 
-- [x] 🟩 **Step 5: Add source links and last-updated timestamps to pattern cards**
-  - [x] 🟩 In the `PatternCard` component: parse the `source` prop to extract client name and date (format is "Client Name | YYYY-MM-DD"). Render the client name as a `<Link>` to `/clients/{slug}` (map known client names to slugs: "Bureau Veritas" → "bureau_veritas", "TÜV SÜD" → "tuv_sud", "Intertek" → "intertek"). Render the date as a "Last updated" label below the source line
-  - [x] 🟩 For Resolution Patterns: source format is "Client ISSUE-XXX | YYYY-MM-DD" — extract client name before "ISSUE", link to client page, show date
+- [x] 🟩 **Step 5: Render deployment config**
+  - [x] 🟩 Create `render.yaml` in project root with: service type `web`, build command `cd frontend && npm install && npm run build && cd ../api && npm install`, start command `cd api && node server.js`, env vars `NODE_ENV=production` and `DSOS_JWT_SECRET` (marked as `generateValue: true` so Render auto-generates it)
 
-### Group B: Move Client Type Sections to TIC Playbook
+### Group B: Deploy (manual platform tasks)
 
-- [x] 🟩 **Step 6: Extend Knowledge API to include client type data**
-  - [x] 🟩 In `api/parsers/knowledge.js`: extended `buildKnowledgeResponse` to accept playbook data and append client-types section
-  - [x] 🟩 Section follows the existing knowledge section shape: `{ id: "client-types", title: "Client Segmentation", icon: "Users", description: "Client types by scale, inspection workflow, and geography" }`
-  - [x] 🟩 Combined Client Type Insights and Client Type Definitions into one section's `data` — insights as introductory points, categories as the structured breakdown
+- [ ] 🟥 **Step 6: Push to GitHub**
+  - [ ] 🟥 Create public repo on GitHub
+  - [ ] 🟥 Add remote, push all code including client data
 
-- [x] 🟩 **Step 7: Render client type section in TIC Playbook page**
-  - [x] 🟩 In `frontend/src/components/knowledge/SectionExpansion.tsx`: added case for `sectionId === "client-types"` with new `ClientSegmentationSection` component
-  - [x] 🟩 Updated `frontend/src/data/fallbacks.ts`: added the client-types section to `FALLBACK_KNOWLEDGE.sections`
-
-- [x] 🟩 **Step 8: Remove client type data from playbook API response**
-  - [x] 🟩 In `api/server.js`: strip `clientTypeInsights` and `clientTypeDefinitions` from the `/api/playbook` response via destructuring
-  - [x] 🟩 In `frontend/src/data/fallbacks.ts`: removed `clientTypeInsights` from `FALLBACK_PLAYBOOK`
+- [ ] 🟥 **Step 7: Render + UptimeRobot**
+  - [ ] 🟥 Connect Render to the GitHub repo, deploy via the `render.yaml` blueprint
+  - [ ] 🟥 Set `LINEAR_API_KEY` env var on Render if Linear integration is wanted
+  - [ ] 🟥 Sign up for UptimeRobot (free), add HTTP monitor: `GET https://[app].onrender.com/api/health`, interval 14 minutes

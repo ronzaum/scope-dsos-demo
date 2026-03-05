@@ -48,7 +48,37 @@ function parseProfile(content) {
 
 function parseCommercial(content) {
   if (!content || isPlaceholder(content)) return null;
-  return parseKeyValueBullets(content);
+  const parsed = parseKeyValueBullets(content);
+
+  // Extract numeric expansion potential value (parse £X string to number)
+  if (parsed.expansionPotential) {
+    const epMatch = parsed.expansionPotential.match(/£([\d,.]+)\s*(k|m|M)?/i);
+    if (epMatch) {
+      let val = parseFloat(epMatch[1].replace(/,/g, ''));
+      const suffix = (epMatch[2] || '').toLowerCase();
+      if (suffix === 'k') val *= 1000;
+      else if (suffix === 'm') val *= 1000000;
+      parsed.expansionPotentialValue = val;
+    }
+  }
+
+  // Parse renewal date as ISO string if valid
+  if (parsed.renewalDate) {
+    const d = new Date(parsed.renewalDate);
+    if (!isNaN(d.getTime())) {
+      parsed.renewalDateParsed = d.toISOString();
+    }
+  }
+
+  // Extract adoption target from success criteria (e.g. "90% inspector adoption")
+  if (parsed.successCriteria) {
+    const adoptionTargetMatch = parsed.successCriteria.match(/(\d+)%\s*(?:inspector\s+)?adoption/i);
+    if (adoptionTargetMatch) {
+      parsed.adoptionTarget = parseInt(adoptionTargetMatch[1], 10);
+    }
+  }
+
+  return parsed;
 }
 
 function parseDeploymentState(content) {
@@ -61,6 +91,23 @@ function parseDeploymentState(content) {
     if (adoptionMatch) {
       parsed.adoptionPercent = parseInt(adoptionMatch[1], 10);
     }
+  }
+
+  // Extract adoption by type sub-bullets
+  // Pattern: "  - Type name: X% (N/M users)"
+  const adoptionByType = [];
+  const abtRegex = /^\s+-\s+(.+?):\s+(\d+)%\s+\((\d+)\/(\d+)\s+users?\)/gm;
+  let abtMatch;
+  while ((abtMatch = abtRegex.exec(content)) !== null) {
+    adoptionByType.push({
+      type: abtMatch[1].trim(),
+      percent: parseInt(abtMatch[2], 10),
+      active: parseInt(abtMatch[3], 10),
+      total: parseInt(abtMatch[4], 10),
+    });
+  }
+  if (adoptionByType.length > 0) {
+    parsed.adoptionByType = adoptionByType;
   }
 
   return parsed;
@@ -282,6 +329,10 @@ function buildClientSummary(client) {
     openIssues: openIssues.length,
     hasBlocking,
     nextAction,
+    pipelineStage: commercial.pipelineStage || null,
+    renewalDate: commercial.renewalDate || null,
+    expansionPotential: commercial.expansionPotential || null,
+    adoptionTarget: commercial.adoptionTarget || null,
   };
 }
 

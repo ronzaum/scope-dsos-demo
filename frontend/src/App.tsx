@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AccessGate } from "@/components/AccessGate";
 import Overview from "./pages/Overview";
 import ClientList from "./pages/ClientList";
 import ClientDetail from "./pages/ClientDetail";
@@ -15,6 +16,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
+  <AccessGate>
   <AuthProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -34,6 +36,7 @@ const App = () => (
       </TooltipProvider>
     </QueryClientProvider>
   </AuthProvider>
+  </AccessGate>
 );
 
 export default App;

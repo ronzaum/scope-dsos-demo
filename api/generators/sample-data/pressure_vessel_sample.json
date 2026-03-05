@@ -1,0 +1,393 @@
+{
+  "_meta": {
+    "disclaimer": "DEMONSTRATION — Simulated Inspection Data. This data is entirely fabricated for demonstration purposes. It does not represent any real vessel, facility, or inspection.",
+    "templateSlug": "pressure_vessel_api510",
+    "generatedFor": "DS-OS Report Generator Demo",
+    "version": "1.0.0"
+  },
+
+  "header": {
+    "reportNumber": "BV-2026-00147",
+    "dateOfExamination": "2026-02-18",
+    "dateOfReport": "2026-02-21",
+    "clientName": "NorthSea Petrochemicals Ltd",
+    "siteName": "Grangemouth Processing Complex",
+    "siteAddress": "Bo'ness Road, Grangemouth, FK3 9XQ, Scotland",
+    "vesselTagNumber": "V-2401-A",
+    "vesselSerialNumber": "MFG-2008-KW-4471",
+    "equipmentDescription": "Vertical Column — Amine Absorber, Fabricated by Koch-Glitsch, 3200mm ID × 18400mm T/T, 42 valve trays",
+    "yearOfManufacture": 2008,
+    "designCode": "ASME VIII Div.1",
+    "mawp": 12.5,
+    "designTemperature": 135,
+    "materialOfConstruction": "SA-516 Gr.70 (shell/heads), SA-240 Type 316L (tray internals)",
+    "inspectorName": "Dr. Sarah Mitchell",
+    "inspectorQualification": "API 510 Certified, Certificate #68412, ASNT Level III UT",
+    "examinationType": "Internal",
+    "wseReference": "WSE/GPC/2026/0091",
+    "previousReportReference": "BV-2023-00089"
+  },
+
+  "scopeAndLimitations": {
+    "areasExamined": [
+      "Upper shell course (above tray 30)",
+      "Lower shell course (below tray 10)",
+      "Top head (2:1 ellipsoidal)",
+      "Bottom head (2:1 ellipsoidal)",
+      "Nozzles N1 through N8",
+      "Internal tray supports (trays 1, 10, 20, 30, 42)",
+      "Manway flanges (upper and lower)",
+      "Nameplate"
+    ],
+    "areasNotExamined": [
+      "Mid-shell course trays 11–29 — client restricted access due to residual amine deposits; cleaned only at top and bottom sections"
+    ],
+    "examinationLimitations": "Vessel gas-freed and mechanically cleaned. Residual deposits on trays 11–29 limited internal visual in mid-section. UT readings taken externally at mid-shell TMLs to compensate.",
+    "accessMethod": "Scaffold",
+    "confinedSpaceEntry": true,
+    "confinedSpacePermit": "CSE/GPC/2026-0218-003",
+    "surfacePreparation": "Wire-brushed"
+  },
+
+  "methodology": {
+    "visualExamination": true,
+    "ultrasonicThickness": true,
+    "utInstrument": "Olympus 38DL PLUS, S/N UT-2024-1187, Cal due 2026-08-15",
+    "utProbe": "D797-SM, 5MHz, 6mm diameter, dual-element",
+    "calibrationBlock": "4-step (3.0/6.0/12.0/25.0mm), SA-516 Gr.70, Cert #CAL-2026-0042",
+    "additionalNdtMethods": ["DPT"],
+    "additionalNdtDetails": "Dye penetrant testing applied to weld intersections at nozzles N3 and N5 per procedure NDT-WI-DPT-004 Rev.3. Sherwin D-70 developer system.",
+    "referenceProcedures": "WI-UT-001 Rev.7, WI-VT-003 Rev.5, NDT-WI-DPT-004 Rev.3"
+  },
+
+  "thicknessSurvey": [
+    {
+      "tmlId": "Shell-1",
+      "description": "Lower shell course, 0° (north), 300mm above bottom weld",
+      "nominalThickness": 25.4,
+      "previousReading": 24.1,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 23.6,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Shell-2",
+      "description": "Lower shell course, 90° (east), 300mm above bottom weld",
+      "nominalThickness": 25.4,
+      "previousReading": 23.8,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 23.1,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Shell-3",
+      "description": "Lower shell course, 180° (south), 300mm above bottom weld",
+      "nominalThickness": 25.4,
+      "previousReading": 24.3,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 23.9,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Shell-4",
+      "description": "Lower shell course, 270° (west), 300mm above bottom weld",
+      "nominalThickness": 25.4,
+      "previousReading": 23.5,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 22.7,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Shell-5",
+      "description": "Mid shell course, 0° (north), at tray 15 elevation — external reading",
+      "nominalThickness": 22.2,
+      "previousReading": 21.5,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 21.1,
+      "minimumRequired": 15.8
+    },
+    {
+      "tmlId": "Shell-6",
+      "description": "Mid shell course, 90° (east), at tray 15 elevation — external reading",
+      "nominalThickness": 22.2,
+      "previousReading": 21.3,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 20.8,
+      "minimumRequired": 15.8
+    },
+    {
+      "tmlId": "Shell-7",
+      "description": "Mid shell course, 180° (south), at tray 15 elevation — external reading",
+      "nominalThickness": 22.2,
+      "previousReading": 21.6,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 21.2,
+      "minimumRequired": 15.8
+    },
+    {
+      "tmlId": "Shell-8",
+      "description": "Mid shell course, 270° (west), at tray 15 elevation — external reading",
+      "nominalThickness": 22.2,
+      "previousReading": 21.0,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 20.3,
+      "minimumRequired": 15.8
+    },
+    {
+      "tmlId": "Shell-9",
+      "description": "Upper shell course, 0° (north), 300mm below top weld",
+      "nominalThickness": 19.0,
+      "previousReading": 18.4,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 18.1,
+      "minimumRequired": 12.5
+    },
+    {
+      "tmlId": "Shell-10",
+      "description": "Upper shell course, 90° (east), 300mm below top weld",
+      "nominalThickness": 19.0,
+      "previousReading": 18.6,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 18.2,
+      "minimumRequired": 12.5
+    },
+    {
+      "tmlId": "Shell-11",
+      "description": "Upper shell course, 180° (south), 300mm below top weld",
+      "nominalThickness": 19.0,
+      "previousReading": 18.5,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 18.2,
+      "minimumRequired": 12.5
+    },
+    {
+      "tmlId": "Shell-12",
+      "description": "Upper shell course, 270° (west), 300mm below top weld",
+      "nominalThickness": 19.0,
+      "previousReading": 18.3,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 17.9,
+      "minimumRequired": 12.5
+    },
+    {
+      "tmlId": "Head-N",
+      "description": "Top head (north), crown area",
+      "nominalThickness": 25.4,
+      "previousReading": 24.8,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 24.5,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Head-S",
+      "description": "Top head (south), knuckle radius",
+      "nominalThickness": 25.4,
+      "previousReading": 24.6,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 24.2,
+      "minimumRequired": 18.2
+    },
+    {
+      "tmlId": "Head-B-N",
+      "description": "Bottom head (north), crown area",
+      "nominalThickness": 28.6,
+      "previousReading": 26.9,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 26.1,
+      "minimumRequired": 20.5
+    },
+    {
+      "tmlId": "Head-B-S",
+      "description": "Bottom head (south), knuckle radius",
+      "nominalThickness": 28.6,
+      "previousReading": 27.1,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 26.5,
+      "minimumRequired": 20.5
+    },
+    {
+      "tmlId": "Nozzle-N1",
+      "description": "Nozzle N1 (feed inlet), neck wall at 12 o'clock",
+      "nominalThickness": 15.1,
+      "previousReading": 14.6,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 14.2,
+      "minimumRequired": 10.3
+    },
+    {
+      "tmlId": "Nozzle-N3",
+      "description": "Nozzle N3 (amine inlet), neck wall at 6 o'clock",
+      "nominalThickness": 12.7,
+      "previousReading": 11.8,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 11.0,
+      "minimumRequired": 8.4
+    },
+    {
+      "tmlId": "Nozzle-N5",
+      "description": "Nozzle N5 (bottom outlet), neck wall at 3 o'clock",
+      "nominalThickness": 19.0,
+      "previousReading": 17.6,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 16.8,
+      "minimumRequired": 13.2
+    },
+    {
+      "tmlId": "Nozzle-N7",
+      "description": "Nozzle N7 (instrument), neck wall at 9 o'clock",
+      "nominalThickness": 8.6,
+      "previousReading": 8.2,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 7.9,
+      "minimumRequired": 5.5
+    },
+    {
+      "tmlId": "Shell-4-Low",
+      "description": "Lower shell course, 270° (west), 100mm above bottom weld — accelerated zone",
+      "nominalThickness": 25.4,
+      "previousReading": 22.8,
+      "previousReadingDate": "2023-02-22",
+      "currentReading": 21.4,
+      "minimumRequired": 18.2
+    }
+  ],
+
+  "visualFindings": [
+    {
+      "findingId": "F-001",
+      "location": "Lower shell course, 260°–280° arc, 50–400mm above bottom tangent line",
+      "findingType": "General corrosion",
+      "description": "Broad area of general wall loss on internal surface over approximately 600mm × 350mm zone. Surface profile irregular with shallow undulations up to 1.2mm depth. Consistent with amine-side corrosion in the liquid sump region. No through-wall indications.",
+      "severity": "Requires action (specify timeframe)",
+      "dimensions": "600mm × 350mm area, max depth 1.2mm from local surface",
+      "photographReference": "IMG_2026-0218_001.jpg, IMG_2026-0218_002.jpg",
+      "acceptanceCriteria": "API 510 Section 7.4.2 — remaining thickness above minimum required per ASME VIII",
+      "recommendation": "Continue monitoring at increased frequency. Add two additional TMLs (Shell-4-Low-A, Shell-4-Low-B) in the corroded zone. Evaluate amine chemistry and flow patterns to address root cause.",
+      "timeframe": "Before next examination",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    },
+    {
+      "findingId": "F-002",
+      "location": "Nozzle N3 (amine inlet), internal weld toe at shell junction, 4–8 o'clock arc",
+      "findingType": "Localised pitting",
+      "description": "Cluster of approximately 15 pits within 80mm × 40mm zone at the weld toe of nozzle N3 shell junction. Deepest pit measured at 2.8mm by pit gauge. Pitting follows the heat-affected zone. Consistent with amine stress corrosion cracking precursor pattern.",
+      "severity": "Requires engineering assessment",
+      "dimensions": "80mm × 40mm zone, deepest pit 2.8mm",
+      "photographReference": "IMG_2026-0218_003.jpg, IMG_2026-0218_004.jpg",
+      "acceptanceCriteria": "API 579 Part 6 (Pitting Assessment), API 510 Section 7.5",
+      "recommendation": "FFS assessment required per API 579 Level 2 for pitting. DPT confirmed no surface-breaking cracks at present. Recommend TOFD at next examination to monitor for subsurface cracking initiation.",
+      "timeframe": "Within 30 days",
+      "ndtFollowUpRequired": true,
+      "ndtMethodRecommended": "TOFD"
+    },
+    {
+      "findingId": "F-003",
+      "location": "Bottom head, internal surface, centre of crown",
+      "findingType": "Erosion",
+      "description": "Localised thinning consistent with impingement erosion from the bottom outlet nozzle N5 recirculation pattern. Smooth, polished surface appearance over approximately 200mm diameter area. UT readings (Head-B-N) confirm wall loss tracking with long-term trend.",
+      "severity": "Acceptable (monitor)",
+      "dimensions": "200mm diameter area, gradual thinning — see TML Head-B-N trend",
+      "photographReference": "IMG_2026-0218_005.jpg",
+      "acceptanceCriteria": "API 510 Section 7.4.2 — wall thickness above minimum required",
+      "recommendation": "Continue monitoring at current TML locations. No operational change required at this time. Consider flow deflector at next turnaround if trend accelerates.",
+      "timeframe": "Before next examination",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    },
+    {
+      "findingId": "F-004",
+      "location": "Tray 10, downcomer bolt holes (3 of 8)",
+      "findingType": "Mechanical damage",
+      "description": "Three bolt holes on tray 10 downcomer flange show elongation of 2–3mm beyond original diameter. Bolt threads intact. Likely caused by thermal cycling induced movement. Tray remains structurally adequate but bolt pre-load may be reduced.",
+      "severity": "Acceptable (monitor)",
+      "dimensions": "2–3mm elongation on 3 bolt holes",
+      "photographReference": "IMG_2026-0218_006.jpg",
+      "acceptanceCriteria": "Manufacturer's installation specification — tray bolt pattern integrity",
+      "recommendation": "Replace affected bolts with next size up (fitted bolts) at next turnaround. Monitor adjacent trays (9, 11) for similar pattern.",
+      "timeframe": "Advisory",
+      "ndtFollowUpRequired": false,
+      "ndtMethodRecommended": null
+    },
+    {
+      "findingId": "F-005",
+      "location": "Nozzle N5 (bottom outlet), external flange face",
+      "findingType": "Weld defect",
+      "description": "Undercut observed on external fillet weld at nozzle N5 reinforcement pad, 9–11 o'clock arc (approximately 60mm length). Depth 1.5mm, within original fabrication acceptance criteria but at upper boundary. DPT performed — no crack indications. Likely original fabrication defect not previously recorded.",
+      "severity": "Acceptable (monitor)",
+      "dimensions": "60mm length, 1.5mm undercut depth",
+      "photographReference": "IMG_2026-0218_007.jpg, IMG_2026-0218_008.jpg",
+      "acceptanceCriteria": "ASME VIII Div.1 UW-35 — undercut acceptance limits",
+      "recommendation": "No remedial action required at this time. Record as baseline for future monitoring. DPT at next examination to confirm no crack initiation from the undercut root.",
+      "timeframe": "Before next examination",
+      "ndtFollowUpRequired": true,
+      "ndtMethodRecommended": "DPT"
+    }
+  ],
+
+  "safetyDevices": [
+    {
+      "deviceType": "Pressure relief valve (PRV)",
+      "deviceId": "PSV-2401-A1",
+      "setPressure": 13.75,
+      "lastTestDate": "2025-11-20",
+      "testResult": "Satisfactory",
+      "notes": "Set pressure confirmed at 13.75 bar (110% MAWP). Lift and reseat clean. Bench tested per API 576."
+    },
+    {
+      "deviceType": "Pressure relief valve (PRV)",
+      "deviceId": "PSV-2401-A2",
+      "setPressure": 13.75,
+      "lastTestDate": "2025-11-20",
+      "testResult": "Satisfactory",
+      "notes": "Redundant PRV. Set pressure confirmed. Full pop test satisfactory."
+    },
+    {
+      "deviceType": "Level alarm",
+      "deviceId": "LAH-2401",
+      "setPressure": null,
+      "lastTestDate": "2026-01-15",
+      "testResult": "Satisfactory",
+      "notes": "High level alarm function tested via simulation. Trips at 85% level as per P&ID."
+    },
+    {
+      "deviceType": "Temperature alarm",
+      "deviceId": "TAH-2401",
+      "setPressure": null,
+      "lastTestDate": "2026-01-15",
+      "testResult": "Satisfactory",
+      "notes": "High temperature alarm tested. Trips at 140°C (design temp +5°C margin)."
+    }
+  ],
+
+  "fitnessForService": {
+    "ffsRequired": true,
+    "assessmentMethod": "API 579 Level 2",
+    "defectTypeAssessed": "Localised pitting at Nozzle N3 (Finding F-002)",
+    "result": "Fit with conditions",
+    "conditionsForContinuedService": "Vessel may continue in service at current MAWP provided: (1) TOFD examination of N3 weld HAZ within 30 days, (2) next internal examination within 3 years (not 5), (3) amine chemistry review to address root cause of pitting.",
+    "assessmentReference": "FFS-GPC-2026-0014"
+  },
+
+  "conclusions": {
+    "overallCondition": "Satisfactory with observations",
+    "safeToContinue": true,
+    "conditionsForContinuedService": "Subject to: (1) FFS conditions for N3 pitting — TOFD within 30 days, (2) enhanced monitoring of lower shell corrosion zone with additional TMLs, (3) next internal examination in 3 years maximum.",
+    "statutoryReportRaised": true,
+    "statutoryReportRef": "PSSR/GPC/2026/0091",
+    "summaryOfCriticalFindings": "Five findings recorded. One requires engineering assessment (F-002: localised pitting at N3 nozzle weld HAZ — FFS assessment completed, fit with conditions). One requires action before next examination (F-001: general corrosion in lower shell sump zone — within limits but accelerating). Three acceptable for monitoring. Overall wall loss rates within expected range for amine service. Bottom head and nozzle N5 showing highest long-term rates — within acceptable limits but warrant continued attention.",
+    "nextExaminationType": "Internal",
+    "nextExaminationDate": "2029-02-18",
+    "recommendedIntervalJustification": "3-year interval selected (reduced from standard 5-year) based on: (1) FFS conditions requiring enhanced monitoring, (2) accelerating short-term corrosion rate at Shell-4 zone (0.47 mm/yr short-term vs 0.26 mm/yr long-term), (3) remaining life at thinnest point (Shell-4-Low) is 6.8 years — 3-year interval provides adequate safety margin per API 510 Section 6.4."
+  },
+
+  "declarations": {
+    "competentPersonDeclaration": true,
+    "accreditationStatement": "Bureau Veritas UK Ltd, UKAS Accreditation No. 0075, ISO/IEC 17020:2012 Type A Inspection Body",
+    "independenceDeclaration": true,
+    "inspectorName": "Dr. Sarah Mitchell",
+    "dateSigned": "2026-02-21",
+    "technicalReviewer": "James Crawford, Principal Engineer, API 510/570 Certified",
+    "reviewerDateSigned": "2026-02-21"
+  }
+}

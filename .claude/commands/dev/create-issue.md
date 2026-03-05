@@ -36,6 +36,26 @@ Keep questions brief. One message with 2-3 targeted questions beats multiple bac
 
 ---
 
+## Output — Two Destinations
+
+After gathering info, create the issue in **both** places:
+
+### 1. Local markdown file
+Save to `issues/` with the existing format (see other files in that folder for reference). Filename: `[next-number]-[slug].md`.
+
+### 2. Linear
+Use the Linear MCP tools to create an issue in Linear with:
+- **Title:** Same as the markdown file title
+- **Description:** The full issue body (TL;DR, current state, expected outcome, files, notes) formatted as markdown
+- **Priority:** Map to Linear's scale — urgent (1), high (2), normal (3), low (4). Default: 3
+- **Labels:** Map type (bug/feature/improvement) to Linear labels if they exist
+
+After creating, confirm both were saved and include the Linear issue URL/identifier so the user can find it.
+
+If the Linear MCP server is not connected or the call fails, still save the local file and tell the user the Linear sync failed so they can create it manually.
+
+---
+
 ## Behavior Rules
 
 - Be conversational — ask what makes sense, not a checklist

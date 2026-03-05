@@ -20,6 +20,7 @@ AI-powered inspection automation for the Testing, Inspection, and Certification 
 
 - Writes error-free test, audit, and inspection reports automatically
 - Auto-formats to client brand standards and regulatory formats
+- Output format: PowerPoint (PPTX) — editable in PowerPoint/Google Slides/Keynote — plus PDF for preview and final delivery
 - Supports multiple report types (EICR, LOLER thorough examination, pressure vessel condition reports, fire risk assessments, audit reports)
 - Version control on generated reports
 

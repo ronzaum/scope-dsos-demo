@@ -948,6 +948,14 @@ function relativeTime(dateStr, now) {
   return dateStr;
 }
 
+// --- Static file serving (production) ---
+// Serves the built frontend from frontend/dist/ and handles client-side routing.
+const FRONTEND_DIST = path.resolve(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(FRONTEND_DIST));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(FRONTEND_DIST, 'index.html'));
+});
+
 // --- Startup ---
 loadAllData();
 

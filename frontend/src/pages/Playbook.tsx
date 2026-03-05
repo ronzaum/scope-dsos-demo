@@ -121,7 +121,7 @@ export default function Playbook() {
     <Layout>
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-foreground">Field Notes</h1>
-        <p className="text-sm text-muted-foreground mt-1">Lessons from the field — what worked, what didn't, what to do next</p>
+        <p className="text-sm text-muted-foreground mt-1">Lessons from the field: what worked, what didn't, what to do next</p>
       </div>
 
       {/* Deployment Patterns */}

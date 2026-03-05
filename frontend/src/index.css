@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 217 91% 60%;
+
+    --radius: 6px;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 90%;
+
+    --card: 0 0% 6.7%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 0 0% 6.7%;
+    --popover-foreground: 0 0% 90%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 90%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
+
+    --border: 0 0% 10%;
+    --input: 0 0% 10%;
+    --ring: 217 91% 60%;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 10%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 96%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 80%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 70%);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(0 0% 4%);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 15%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 20%);
+}
+
+/* Stage badges */
+.badge-intake {
+  @apply bg-primary/15 text-primary border border-primary/30 whitespace-nowrap;
+}
+
+.badge-phase1 {
+  @apply border;
+  background: hsl(var(--warning) / 0.15);
+  color: hsl(var(--warning));
+  border-color: hsl(var(--warning) / 0.3);
+  white-space: nowrap;
+}
+
+.badge-phase2 {
+  @apply border;
+  background: hsl(var(--success) / 0.15);
+  color: hsl(var(--success));
+  border-color: hsl(var(--success) / 0.3);
+  white-space: nowrap;
+}
+
+.badge-at-risk {
+  @apply border;
+  background: hsl(var(--destructive) / 0.15);
+  color: hsl(var(--destructive));
+  border-color: hsl(var(--destructive) / 0.3);
+  white-space: nowrap;
+}
+
+.badge-blocking {
+  @apply border;
+  background: hsl(var(--destructive) / 0.15);
+  color: hsl(var(--destructive));
+  border-color: hsl(var(--destructive) / 0.3);
+  white-space: nowrap;
+}
+
+.badge-degrading {
+  @apply border;
+  background: hsl(var(--warning) / 0.15);
+  color: hsl(var(--warning));
+  border-color: hsl(var(--warning) / 0.3);
+  white-space: nowrap;
+}
+
+.badge-minor {
+  @apply border;
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+  white-space: nowrap;
+}
+
+.badge-resolved {
+  @apply border;
+  background: hsl(var(--success) / 0.15);
+  color: hsl(var(--success));
+  border-color: hsl(var(--success) / 0.3);
+  white-space: nowrap;
+}
+
+/* Confidence badges */
+.confidence-high {
+  @apply border;
+  background: hsl(var(--success) / 0.15);
+  color: hsl(var(--success));
+  border-color: hsl(var(--success) / 0.3);
+  white-space: nowrap;
+}
+
+.confidence-medium {
+  @apply border;
+  background: hsl(var(--warning) / 0.15);
+  color: hsl(var(--warning));
+  border-color: hsl(var(--warning) / 0.3);
+  white-space: nowrap;
+}
+
+.confidence-low {
+  @apply border;
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+  white-space: nowrap;
+}
