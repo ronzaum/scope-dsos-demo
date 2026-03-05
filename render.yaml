@@ -2,7 +2,7 @@ services:
   - type: web
     name: ds-os
     runtime: node
-    buildCommand: cd frontend && npm install && npm run build && cd ../api && npm install
+    buildCommand: cd frontend && npm install --include=dev && npm run build && cd ../api && npm install
     startCommand: cd api && node server.js
     envVars:
       - key: NODE_ENV
