@@ -1,57 +1,62 @@
-# DS-OS Extension — Implementation Plan
+# FE-023: Playbook → Field Notes Refactor
 
 **Overall Progress:** `100%`
 
+Addresses `issues/023-field-notes-refactor.md` | Linear: RON-32
+
 ## TLDR
 
-Extend the DS-OS with a templating layer, knowledge base, and Friday trial infrastructure. The system must handle templating, strategy, and anything else Friday throws at Ron. Two-layer knowledge model: factual industry knowledge built now (Layer 1), Scope's tool mechanics captured on arrival (Layer 2). Commands are clearly separated into 5 categories so workflows never get confused. A4 cheatsheet for quick reference all day.
+Rename the "Playbook" page to "Field Notes" with a Footprints icon. Remove decorative sections (Operational Rules, Cross-Client Comparison chart). Move reference content (Client Type Definitions, Client Type Insights) to TIC Playbook. Surface the Metrics Benchmarks table that's already parsed but never rendered. Add source-to-client links and last-updated timestamps on pattern cards.
 
 ## Critical Decisions
 
-- **4 consolidated knowledge files, not 12:** Same depth, faster to navigate mid-trial. One file per topic with scannable headers.
-- **Two-layer knowledge model:** Layer 1 (standards, inspection types, report structures) built now. Layer 2 (Scope's tool) captured Friday via `/Tool_Setup`. Commands work with Layer 1 from minute 1, get sharper with Layer 2.
-- **Keep full DS-OS:** Friday could be templating, outreach, or strategy. Don't narrow. Strategy commands stay as a live category.
-- **Stay in Cursor/Claude Code:** No app. The value is workflow speed, not a UI.
-- **Pre-loaded example template:** One complete pressure vessel spec as reference pattern. Tool-agnostic until Friday.
-- **5 command categories:** Setup / Templating / Strategy / System / Anytime. Clear separation prevents workflow confusion.
+- **"Field Notes" as name** — distinct from "TIC Playbook", grounded in deployment experience rather than industry reference
+- **Footprints icon** — visually unique in the sidebar, reinforces field/ground-truth connotation
+- **Client Type data moves to Knowledge API** — rather than fetching from playbook API on the Knowledge page, move the data to `/api/knowledge` response so TIC Playbook gets it natively
+- **Cross-Client Comparison chart removed entirely** — it duplicates Overview data. Not relocated, just removed from Field Notes
+- **Route changes from `/playbook` to `/field-notes`** — clean break, low risk for demo app
+
+## Execution Groups
+
+**Group A: Rename + Clean Up Field Notes** — Sidebar rename, icon swap, route change, remove Operational Rules and Cross-Client chart, add Metrics Benchmarks table, add source links and timestamps. Steps 1-5.
+
+**Group B: Move Client Type Sections to TIC Playbook** — Extend Knowledge API to include client type data from playbook files, render in TIC Playbook page, remove from Field Notes. Steps 6-8.
 
 ## Tasks
 
-- [x] 🟩 **Step 1: Research — Scope product + TIC industry + standards**
-  - [x] 🟩 Deep web research on Scope AI (getscope.ai, LinkedIn, press, case studies)
-  - [x] 🟩 Research TIC inspection types (pressure vessel, lifting equipment, electrical, NDT, factory audit, fire safety)
-  - [x] 🟩 Research regulatory standards (API 510, LOLER, BS 7671, ISO 17020, PED, PUWER)
-  - [x] 🟩 Research TIC report structures and anatomy
+### Group A: Rename + Clean Up Field Notes
 
-- [x] 🟩 **Step 2: Knowledge base — write 4 files under `/data/knowledge/`**
-  - [x] 🟩 `scope_product.md` — Scope's public product info, features, claims
-  - [x] 🟩 `inspection_types.md` — all inspection types in one file (process, fields, instruments, report structure, standard)
-  - [x] 🟩 `regulatory_standards.md` — all standards in one file (governs, classification system, report requirements)
-  - [x] 🟩 `report_anatomy.md` — universal TIC report skeleton, variations by type, good vs bad
+- [x] 🟩 **Step 1: Rename sidebar entry and swap icon**
+  - [x] 🟩 In `frontend/src/components/AppSidebar.tsx`: change `title: "Playbook"` to `title: "Field Notes"`, change `path: "/playbook"` to `path: "/field-notes"`, replace `BookOpen` import with `Footprints`
 
-- [x] 🟩 **Step 3: Friday infrastructure — context files + template library**
-  - [x] 🟩 Create `/data/friday/tool_capture.md` — empty structured template for Layer 2 capture
-  - [x] 🟩 Create `/data/friday/trial_log.md` — empty running log
-  - [x] 🟩 Create `/data/templates/_template_index.md` — template index (starts with example)
-  - [x] 🟩 Create `/data/templates/example_pressure_vessel_api510.md` — pre-loaded example template spec
+- [x] 🟩 **Step 2: Update route in App.tsx**
+  - [x] 🟩 In `frontend/src/App.tsx`: change the Playbook route path from `/playbook` to `/field-notes`
 
-- [x] 🟩 **Step 4: Setup commands**
-  - [x] 🟩 `commands/Friday_Context.md` — trial day entry point, capture situation, load knowledge, set eval awareness
-  - [x] 🟩 `commands/Tool_Setup.md` — capture Scope's tool mechanics, structure freeform input, flag gaps, re-runnable
+- [x] 🟩 **Step 3: Update page title, subtitle, and remove decorative sections**
+  - [x] 🟩 In `frontend/src/pages/Playbook.tsx` (or rename file to `FieldNotes.tsx`): change h1 to "Field Notes", subtitle to "Lessons from the field — what worked, what didn't, what to do next"
+  - [x] 🟩 Remove the Operational Rules accordion (the `rules` state, the `expandedRule` state, and the entire `{rules.length > 0 && ...}` block inside the Method Registry section)
+  - [x] 🟩 Remove the Cross-Client Comparison chart section (the `overviewData` fetch, the `CrossClientComparison` import, and the entire `{overviewData.deployments && ...}` block)
+  - [x] 🟩 Remove the Cross-Client Insights section (Client Type Insights and Client Type Definitions blocks) — these move to TIC Playbook in Group B
 
-- [x] 🟩 **Step 5: Templating commands**
-  - [x] 🟩 `commands/Template_Spec.md` — main work command, inspection type + context → structured spec, reads knowledge + tool capture, flags overlaps
-  - [x] 🟩 `commands/Report_Map.md` — analyse customer's existing report, map structure, feeds into Template_Spec
-  - [x] 🟩 `commands/Template_QA.md` — quality check template spec (fields, classification, structure, mapping completeness)
-  - [x] 🟩 `commands/Pattern_Check.md` — scan template library for overlaps and reusable elements, scalability signal
+- [x] 🟩 **Step 4: Add Metrics Benchmarks table**
+  - [x] 🟩 In `frontend/src/pages/Playbook.tsx`: the API already returns `metricsBenchmarks` (parsed in `api/parsers/playbook.js` from the table in `deployment_playbook.md`). Render it as a table section after Resolution Patterns. Columns: Metric, one column per client, Target. Same table styling as Method Registry
+  - [x] 🟩 Update `frontend/src/data/fallbacks.ts`: add `metricsBenchmarks` array to `FALLBACK_PLAYBOOK` matching the 4-row table in `data/playbook/deployment_playbook.md`
 
-- [x] 🟩 **Step 6: Anytime command**
-  - [x] 🟩 `commands/Ask_Right.md` — contextual question generator, works across all workflows
+- [x] 🟩 **Step 5: Add source links and last-updated timestamps to pattern cards**
+  - [x] 🟩 In the `PatternCard` component: parse the `source` prop to extract client name and date (format is "Client Name | YYYY-MM-DD"). Render the client name as a `<Link>` to `/clients/{slug}` (map known client names to slugs: "Bureau Veritas" → "bureau_veritas", "TÜV SÜD" → "tuv_sud", "Intertek" → "intertek"). Render the date as a "Last updated" label below the source line
+  - [x] 🟩 For Resolution Patterns: source format is "Client ISSUE-XXX | YYYY-MM-DD" — extract client name before "ISSUE", link to client page, show date
 
-- [x] 🟩 **Step 7: Update CLAUDE.md**
-  - [x] 🟩 Add command categories (5 groups, clearly labelled)
-  - [x] 🟩 Add knowledge base rules (Layer 1 vs Layer 2)
-  - [x] 🟩 Add template library rules (every spec to `/data/templates/`, index always updated)
+### Group B: Move Client Type Sections to TIC Playbook
 
-- [x] 🟩 **Step 8: Friday cheatsheet**
-  - [x] 🟩 Write `/data/friday/FRIDAY_CHEATSHEET.md` — single A4 scannable reference, all workflows, all commands, built last so it reflects reality
+- [x] 🟩 **Step 6: Extend Knowledge API to include client type data**
+  - [x] 🟩 In `api/parsers/knowledge.js`: extended `buildKnowledgeResponse` to accept playbook data and append client-types section
+  - [x] 🟩 Section follows the existing knowledge section shape: `{ id: "client-types", title: "Client Segmentation", icon: "Users", description: "Client types by scale, inspection workflow, and geography" }`
+  - [x] 🟩 Combined Client Type Insights and Client Type Definitions into one section's `data` — insights as introductory points, categories as the structured breakdown
+
+- [x] 🟩 **Step 7: Render client type section in TIC Playbook page**
+  - [x] 🟩 In `frontend/src/components/knowledge/SectionExpansion.tsx`: added case for `sectionId === "client-types"` with new `ClientSegmentationSection` component
+  - [x] 🟩 Updated `frontend/src/data/fallbacks.ts`: added the client-types section to `FALLBACK_KNOWLEDGE.sections`
+
+- [x] 🟩 **Step 8: Remove client type data from playbook API response**
+  - [x] 🟩 In `api/server.js`: strip `clientTypeInsights` and `clientTypeDefinitions` from the `/api/playbook` response via destructuring
+  - [x] 🟩 In `frontend/src/data/fallbacks.ts`: removed `clientTypeInsights` from `FALLBACK_PLAYBOOK`
