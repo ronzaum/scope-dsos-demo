@@ -31,8 +31,8 @@ function generateToken(name, role) {
  * Attaches decoded payload to req.user on success.
  */
 function authMiddleware(req, res, next) {
-  // Skip public routes
-  if (PUBLIC_ROUTES.includes(req.path)) {
+  // Skip non-API routes (static files, SPA catch-all) and public API routes
+  if (!req.path.startsWith('/api') || PUBLIC_ROUTES.includes(req.path)) {
     return next();
   }
 
