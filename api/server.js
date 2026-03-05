@@ -168,7 +168,7 @@ function reloadFile(filePath) {
 }
 
 // --- Middleware ---
-app.use(cors());
+app.use(cors({ origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : true }));
 app.use(express.json());
 
 // Security middleware stack: audit first (captures everything), then auth, then RBAC.
@@ -582,6 +582,13 @@ app.post('/api/templates/:slug/generate', async (req, res) => {
  */
 app.get('/api/templates/:slug/output', (req, res) => {
   const { slug } = req.params;
+
+  // Validate slug against known templates to prevent path traversal
+  const templates = cache.templates || { templates: [] };
+  if (!templates.templates.find(t => t.slug === slug)) {
+    return res.status(404).json({ error: `Template '${slug}' not found` });
+  }
+
   const outputDir = path.join(OUTPUTS_DIR, slug);
 
   if (!fs.existsSync(outputDir)) {
@@ -606,6 +613,12 @@ app.get('/api/templates/:slug/output', (req, res) => {
  */
 app.get('/api/templates/:slug/output/:filename', (req, res) => {
   const { slug, filename } = req.params;
+
+  // Validate slug against known templates to prevent path traversal
+  const templates = cache.templates || { templates: [] };
+  if (!templates.templates.find(t => t.slug === slug)) {
+    return res.status(404).json({ error: `Template '${slug}' not found` });
+  }
 
   // Sanitise filename to prevent path traversal
   const safe = path.basename(filename);
@@ -655,9 +668,14 @@ app.post('/api/templates/:slug/request-edit', express.json(), async (req, res) =
   }
 
   const requestsFile = path.join(requestsDir, `${slug}.json`);
-  const existing = fs.existsSync(requestsFile)
-    ? JSON.parse(fs.readFileSync(requestsFile, 'utf-8'))
-    : [];
+  let existing = [];
+  if (fs.existsSync(requestsFile)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(requestsFile, 'utf-8'));
+    } catch {
+      console.error(`  [Edit Request] Failed to parse ${requestsFile}, starting fresh`);
+    }
+  }
 
   const id = `EDIT-${slug.toUpperCase().slice(0, 8)}-${existing.length + 1}`;
   const entry = {
@@ -688,10 +706,9 @@ app.post('/api/templates/:slug/request-edit', express.json(), async (req, res) =
   }
 
   try {
-    // Linear IDs from plan
-    const TEAM_ID = 'e8390124-668b-4863-8f68-b7a078cfed05';
-    const PROJECT_ID = '79e8551a-380a-4eef-bc62-7cd1d9aee977';
-    const ASSIGNEE_ID = '3748ebf7-f071-4ffd-99f9-cfb8c9c88f31';
+    const TEAM_ID = process.env.LINEAR_TEAM_ID;
+    const PROJECT_ID = process.env.LINEAR_PROJECT_ID;
+    const ASSIGNEE_ID = process.env.LINEAR_ASSIGNEE_ID;
 
     // Ensure "Template Fix" label exists, or create it
     const labelId = await ensureLinearLabel(LINEAR_API_KEY, TEAM_ID, 'Template Fix');
@@ -727,6 +744,7 @@ app.post('/api/templates/:slug/request-edit', express.json(), async (req, res) =
         Authorization: LINEAR_API_KEY,
       },
       body: JSON.stringify({ query: mutation, variables }),
+      signal: AbortSignal.timeout(10000),
     });
 
     const linearData = await linearRes.json();
@@ -764,6 +782,7 @@ async function ensureLinearLabel(apiKey, teamId, labelName) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: apiKey },
       body: JSON.stringify({ query: searchQuery, variables: { teamId } }),
+      signal: AbortSignal.timeout(10000),
     });
 
     const searchData = await searchRes.json();
@@ -789,6 +808,7 @@ async function ensureLinearLabel(apiKey, teamId, labelName) {
         query: createQuery,
         variables: { input: { teamId, name: labelName, color: '#F97316' } },
       }),
+      signal: AbortSignal.timeout(10000),
     });
 
     const createData = await createRes.json();

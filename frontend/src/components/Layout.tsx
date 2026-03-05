@@ -11,7 +11,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex w-full">
       <AppSidebar />
-      <main className="flex-1 ml-14 lg:ml-56 min-h-screen relative">
+      <main className="flex-1 ml-0 md:ml-14 lg:ml-56 min-h-screen relative">
         {/* Top-right action buttons */}
         <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
           <button
@@ -29,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </button>
         </div>
-        <div className="p-6 lg:p-8 max-w-[1400px]">
+        <div className="p-4 md:p-6 lg:p-8 max-w-[1400px]">
           {children}
         </div>
       </main>

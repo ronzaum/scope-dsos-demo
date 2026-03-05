@@ -1,59 +1,94 @@
-# FE-015: Deploy DS-OS as a Shareable URL
+# Code Review Action Plan — Security, Correctness & Quality
 
-**Overall Progress:** `100% (Group A)`
-
-Addresses `issues/015-deploy-shareable-url.md` | Linear: RON-20
+**Overall Progress:** `100%`
+**Issue:** `issues/026-code-review-action-plan.md` | **Linear:** RON-35
 
 ## TLDR
 
-Deploy DS-OS to a public URL on Render (free tier) so Scope can interact with it directly. Single Express process serves both the API and the built frontend. Password gate (`complianceismypassion`) on entry. Public GitHub repo so they can browse the source. UptimeRobot pings `/api/health` every 14 minutes to prevent cold starts.
+Full project peer review confirmed 12 issues. Fix the 3 blocking items (path traversal, render-time state updates, JWT hardening), then 6 medium items (crash guard, dead code, env vars, CORS, audit memory, type safety), then 3 low backlog items. 8 initial findings were rejected as false positives.
 
 ## Critical Decisions
 
-- **Single service** — Express serves `frontend/dist/` static files alongside `/api/*` routes. One process, one port, no CORS needed. Simplest possible deployment.
-- **Public repo** — all data is simulated with disclaimer banners, secrets are gitignored. Scope seeing the code is a feature, not a risk.
-- **Client-side password gate** — not a security boundary, just access control. `sessionStorage` so it persists per tab. Wraps the entire app before `AuthProvider` mounts.
-- **UptimeRobot keep-alive** — free service pings health endpoint every 14min, Render never sleeps. 750 free hours/month = 31 days, cannot be exceeded by a single service.
-
-## Execution Groups
-
-**Group A: Code Changes** — Make the codebase deploy-ready. Express static serving, password gate, gitignore update, env config, render.yaml. Steps 1-5.
-
-**Group B: Deploy** — Push to GitHub, connect Render, set up UptimeRobot. Steps 6-7. These are manual platform tasks, not code — listed here for completeness but executed outside `/dev:execute`.
-
-Dependencies: B requires A to be complete (code must be ready before pushing/deploying).
+- **Path traversal fix uses cache validation** — validate slug against `cache.templates.templates` map rather than regex sanitization, because the cache is the authoritative list of valid slugs
+- **JWT fallback kept for dev only** — guard on `NODE_ENV === 'production'` rather than removing the fallback entirely, so local dev still works without .env
+- **Render-time state fix uses useEffect + ref** — convert the `if (!checked)` pattern to `useEffect` with a ref to prevent double-fire in Strict Mode
+- **Sync I/O left as-is** — downgraded to backlog given single-user demo context; not included in this plan
 
 ## Tasks
 
-### Group A: Code Changes
+### Group A: Blocking Fixes (Security + Correctness)
 
-- [x] 🟩 **Step 1: Express serves frontend static files**
-  - [x] 🟩 In `api/server.js`, after the last `/api/*` route and before `app.listen()`, add `express.static()` middleware pointing at `path.resolve(__dirname, '..', 'frontend', 'dist')`
-  - [x] 🟩 Add catch-all `app.get('*')` route below the static middleware that sends `frontend/dist/index.html` — this handles React Router client-side routing (e.g. `/clients/bureau_veritas` loads the SPA, not a 404)
+- [x] 🟩 **Step 1: Fix path traversal in template output route**
+  - [x] 🟩 In `api/server.js:607`, before constructing `filePath`, validate that `slug` exists in `cache.templates.templates` (same check as line 494). Return 404 if not found
+  - [x] 🟩 Apply the same slug validation to `GET /api/templates/:slug/output` (line 583) for consistency
 
-- [x] 🟩 **Step 2: Production env for frontend**
-  - [x] 🟩 Create `frontend/.env.production` with `VITE_API_BASE=` (empty string — same-origin requests when served from Express)
+- [x] 🟩 **Step 2: Fix render-time state updates in TemplateRow**
+  - [x] 🟩 In `frontend/src/pages/Templates.tsx:289-295`, replace the `if (!checked)` block with a `useEffect` that runs on mount, using `slug` as dependency
+  - [x] 🟩 Add `useEffect` import if not already present (it is not — only `useState, useCallback` are imported for TemplateRow)
 
-- [x] 🟩 **Step 3: Password gate component**
-  - [x] 🟩 Create `frontend/src/components/AccessGate.tsx` — full-screen centered card with a single text input ("Enter access code") and a submit button
-  - [x] 🟩 On submit, compare input to the string `complianceismypassion`. If match, write `dsos-access=true` to `sessionStorage` and render children. If wrong, show inline error text
-  - [x] 🟩 On mount, check `sessionStorage` for `dsos-access=true` — if present, skip the gate and render children immediately
-  - [x] 🟩 In `frontend/src/App.tsx`, wrap the entire existing JSX tree with `<AccessGate>...</AccessGate>` so it sits outside `AuthProvider` — no API calls fire until the code is entered
+- [x] 🟩 **Step 3: Fix render-time state updates in TemplateDetail**
+  - [x] 🟩 In `frontend/src/pages/Templates.tsx:386-397`, replace the `if (!outputChecked)` block with a `useEffect` that runs on mount, using `slug` as dependency
+  - [x] 🟩 Move the `loadPdfPreview` call inside the same effect (it's already a `useCallback`, so can be called from the effect)
 
-- [x] 🟩 **Step 4: Un-gitignore client data**
-  - [x] 🟩 Remove the `/data/clients/` line from `.gitignore`
-  - [x] 🟩 Verify all 3 client files (`bureau_veritas.md`, `intertek.md`, `tuv_sud.md`) have the `> **SIMULATED DATA**` disclaimer banner at the top
+- [x] 🟩 **Step 4: Harden JWT secret for production**
+  - [x] 🟩 In `api/middleware/auth.js:13`, change to: `const JWT_SECRET = process.env.DSOS_JWT_SECRET || (process.env.NODE_ENV === 'production' ? (() => { throw new Error('DSOS_JWT_SECRET must be set in production'); })() : 'dsos-demo-secret-change-in-production');`
+  - [x] 🟩 `NODE_ENV=production` already present in `render.yaml`
 
-- [x] 🟩 **Step 5: Render deployment config**
-  - [x] 🟩 Create `render.yaml` in project root with: service type `web`, build command `cd frontend && npm install && npm run build && cd ../api && npm install`, start command `cd api && node server.js`, env vars `NODE_ENV=production` and `DSOS_JWT_SECRET` (marked as `generateValue: true` so Render auto-generates it)
+### Group B: Medium Fixes (Robustness + Cleanup)
 
-### Group B: Deploy (manual platform tasks)
+- [x] 🟩 **Step 5: Wrap uncaught JSON.parse in try-catch**
+  - [x] 🟩 In `api/server.js:658-659`, wrap the `JSON.parse(fs.readFileSync(requestsFile, 'utf-8'))` in try-catch, defaulting to `[]` on parse failure
 
-- [ ] 🟥 **Step 6: Push to GitHub**
-  - [ ] 🟥 Create public repo on GitHub
-  - [ ] 🟥 Add remote, push all code including client data
+- [x] 🟩 **Step 6: Remove dead cookie parsing code**
+  - [x] 🟩 Delete line 404 in `frontend/src/pages/Templates.tsx` (`const token = (document.cookie.match(...))`)
 
-- [ ] 🟥 **Step 7: Render + UptimeRobot**
-  - [ ] 🟥 Connect Render to the GitHub repo, deploy via the `render.yaml` blueprint
-  - [ ] 🟥 Set `LINEAR_API_KEY` env var on Render if Linear integration is wanted
-  - [ ] 🟥 Sign up for UptimeRobot (free), add HTTP monitor: `GET https://[app].onrender.com/api/health`, interval 14 minutes
+- [x] 🟩 **Step 7: Move Linear IDs to environment variables**
+  - [x] 🟩 In `api/server.js:692-694`, replace hardcoded `TEAM_ID`, `PROJECT_ID`, `ASSIGNEE_ID` with `process.env.LINEAR_TEAM_ID`, `process.env.LINEAR_PROJECT_ID`, `process.env.LINEAR_ASSIGNEE_ID`
+  - [x] 🟩 Add the three variables to `api/.env` with current values
+  - [x] 🟩 Add the three variables to `render.yaml` environment section
+
+- [x] 🟩 **Step 8: Restrict CORS to known origins**
+  - [x] 🟩 In `api/server.js:171`, replace `app.use(cors())` with `app.use(cors({ origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : true }))`
+  - [x] 🟩 Add `ALLOWED_ORIGINS` to `render.yaml` environment section
+
+- [x] 🟩 **Step 9: Cap audit log memory usage**
+  - [x] 🟩 In `api/middleware/audit.js:71`, replace `fs.readFileSync` with a tail-based approach: read last 512KB of file rather than the entire file
+
+- [x] 🟩 **Step 10: Replace `any` types with proper interfaces**
+  - [x] 🟩 In `frontend/src/pages/Templates.tsx:59`, replace `useApiData<any>` with `TemplatesResponse` interface
+  - [x] 🟩 In `frontend/src/pages/Templates.tsx:284`, replace `template: any` with `TemplateListItem` in TemplateRow props
+  - [x] 🟩 In `frontend/src/pages/Templates.tsx:370`, replace `useApiData<any>` with `TemplateFullDetail`
+  - [x] 🟩 In `frontend/src/pages/Knowledge.tsx:14` and `frontend/src/components/knowledge/KnowledgePanel.tsx:31`, replace `data: any` with `Record<string, unknown>`
+
+### Group C: Backlog (Low Priority)
+
+- [x] 🟩 **Step 11: Add timeout on Linear API fetch calls**
+  - [x] 🟩 In `api/server.js`, add `signal: AbortSignal.timeout(10000)` to all 3 Linear `fetch()` calls
+
+- [x] 🟩 **Step 12: Remove console.error in NotFound**
+  - [x] 🟩 In `frontend/src/pages/NotFound.tsx:7-9`, delete the `useEffect` block, `useEffect` import, and `useLocation` (all unused)
+
+## Execution Groups
+
+**Group A: Blocking Fixes** (Steps 1-4)
+Security and correctness — must ship first. Path traversal is exploitable, React bugs affect stability, JWT fallback is a production risk. All 4 steps are independent of each other.
+
+**Group B: Medium Fixes** (Steps 5-10)
+Robustness and cleanup. Each step is independent. Can run after Group A or in parallel.
+
+**Group C: Backlog** (Steps 11-12)
+Nice-to-have. Can be done anytime.
+
+## Paste-Ready Prompts
+
+```
+/dev:execute Group A — Blocking Fixes: Fix path traversal in template output route (validate slug against cache), convert render-time state updates to useEffect in TemplateRow and TemplateDetail, harden JWT secret for production. Steps 1-4 in PLAN.md. Addresses issues/026-code-review-action-plan.md.
+```
+
+```
+/dev:execute Group B — Medium Fixes: Wrap uncaught JSON.parse in try-catch, remove dead cookie code, move Linear IDs to env vars, restrict CORS origins, cap audit log memory, replace any types with interfaces. Steps 5-10 in PLAN.md. Addresses issues/026-code-review-action-plan.md.
+```
+
+```
+/dev:execute Group C — Backlog: Add 10s timeout on Linear API fetch calls, remove console.error in NotFound page. Steps 11-12 in PLAN.md. Addresses issues/026-code-review-action-plan.md.
+```

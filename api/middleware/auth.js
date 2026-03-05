@@ -9,8 +9,8 @@
 const jwt = require('jsonwebtoken');
 const { validRoles } = require('../config/roles');
 
-// Demo fallback secret — override via DSOS_JWT_SECRET in production.
-const JWT_SECRET = process.env.DSOS_JWT_SECRET || 'dsos-demo-secret-change-in-production';
+// Require DSOS_JWT_SECRET in production; allow demo fallback in development.
+const JWT_SECRET = process.env.DSOS_JWT_SECRET || (process.env.NODE_ENV === 'production' ? (() => { throw new Error('DSOS_JWT_SECRET must be set in production'); })() : 'dsos-demo-secret-change-in-production');
 const TOKEN_EXPIRY = '8h';
 
 // Routes that skip authentication entirely.

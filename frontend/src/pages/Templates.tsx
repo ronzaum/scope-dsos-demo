@@ -1,7 +1,8 @@
 import { Layout } from "@/components/Layout";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApiData } from "@/hooks/useApiData";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { FALLBACK_TEMPLATES } from "@/data/fallbacks";
 import { ChevronDown, ChevronRight, FileText, Download, FileOutput, Loader2, CheckCircle2, AlertCircle, Pencil, BoxSelect } from "lucide-react";
 import { PatternDetection } from "@/components/PatternDetection";
@@ -54,8 +55,31 @@ interface OutputData {
   generatedAt: string | null;
 }
 
+interface TemplateListItem {
+  slug: string;
+  name: string;
+  inspectionType: string;
+  inspectionFamily: string;
+  standard: string;
+  status: string;
+  created: string;
+  sections: TemplateSection[];
+  fieldCount: number;
+  revenueContext: Record<string, unknown> | null;
+}
+
+interface TemplatesResponse {
+  templates: TemplateListItem[];
+  indexEntries: Record<string, unknown>[];
+}
+
+interface TemplateFullDetail extends TemplateListItem {
+  rawContent?: string;
+  revenueContext: Record<string, unknown> | null;
+}
+
 export default function Templates() {
-  const { data, loading } = useApiData<any>("/api/templates", FALLBACK_TEMPLATES);
+  const { data, loading } = useApiData<TemplatesResponse>("/api/templates", FALLBACK_TEMPLATES);
   const { data: coreBlockDataRaw } = useApiData<any>("/api/templates/core-blocks", { coreBlocks: [] });
   const coreBlockData = (coreBlockDataRaw || { coreBlocks: [] }) as { coreBlocks: any[] };
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -67,6 +91,7 @@ export default function Templates() {
   const [extractDialogOpen, setExtractDialogOpen] = useState(false);
   const [blockName, setBlockName] = useState("");
   const [extracting, setExtracting] = useState(false);
+  const isMobile = useIsMobile();
 
   if (loading) {
     return (
@@ -83,7 +108,7 @@ export default function Templates() {
   const statuses = ["all", "Draft", "Complete", "QA'd", "Live"];
   const filtered = filterStatus === "all"
     ? templates
-    : templates.filter((t: any) => t.status === filterStatus);
+    : templates.filter((t) => t.status === filterStatus);
 
   return (
     <Layout>
@@ -112,22 +137,25 @@ export default function Templates() {
           </div>
         ) : (
           <div className="rounded-lg border border-border bg-card divide-y divide-border">
-            {/* Table header */}
-            <div className="px-5 py-3 grid grid-cols-12 gap-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              <div className="col-span-4">Name</div>
-              <div className="col-span-2">Inspection Type</div>
-              <div className="col-span-2">Standard</div>
-              <div className="col-span-1 text-center">Fields</div>
-              <div className="col-span-1 text-center">Status</div>
-              <div className="col-span-2 text-center">Reports</div>
-            </div>
+            {/* Table header — hidden on mobile */}
+            {!isMobile && (
+              <div className="px-5 py-3 grid grid-cols-12 gap-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <div className="col-span-4">Name</div>
+                <div className="col-span-2">Inspection Type</div>
+                <div className="col-span-2">Standard</div>
+                <div className="col-span-1 text-center">Fields</div>
+                <div className="col-span-1 text-center">Status</div>
+                <div className="col-span-2 text-center">Reports</div>
+              </div>
+            )}
 
-            {filtered.map((t: any) => (
+            {filtered.map((t) => (
               <TemplateRow
                 key={t.slug}
                 template={t}
                 expanded={expandedSlug === t.slug}
                 onToggle={() => setExpandedSlug(expandedSlug === t.slug ? null : t.slug)}
+                isMobile={isMobile}
               />
             ))}
 
@@ -276,45 +304,61 @@ export default function Templates() {
 }
 
 /** Row for a single template — includes output status indicator */
-function TemplateRow({ template: t, expanded, onToggle }: { template: any; expanded: boolean; onToggle: () => void }) {
+function TemplateRow({ template: t, expanded, onToggle, isMobile }: { template: TemplateListItem; expanded: boolean; onToggle: () => void; isMobile?: boolean }) {
   const { apiFetch } = useAuth();
   const [outputData, setOutputData] = useState<OutputData | null>(null);
-  const [checked, setChecked] = useState(false);
 
-  // Check for existing outputs on first render
-  if (!checked) {
-    setChecked(true);
+  // Check for existing outputs on mount
+  useEffect(() => {
     apiFetch<OutputData>(`/api/templates/${t.slug}/output`).then(data => {
       if (data && data.files && data.files.length > 0) setOutputData(data);
     });
-  }
+  }, [t.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasOutputs = outputData && outputData.files.length > 0;
 
   return (
     <div>
-      <button
-        onClick={onToggle}
-        className="w-full px-5 py-4 grid grid-cols-12 gap-4 items-center text-left hover:bg-secondary/30 transition-colors"
-      >
-        <div className="col-span-4 flex items-center gap-2">
-          {expanded ? <ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /> : <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />}
-          <span className="text-sm font-medium text-foreground">{t.name}</span>
-        </div>
-        <div className="col-span-2 text-xs text-muted-foreground">{t.inspectionType}</div>
-        <div className="col-span-2 text-xs text-muted-foreground">{t.standard}</div>
-        <div className="col-span-1 text-center text-xs font-mono text-muted-foreground">{t.fieldCount}</div>
-        <div className="col-span-1 text-center">
-          <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${statusClass[t.status] || "badge-minor"}`}>{t.status}</span>
-        </div>
-        <div className="col-span-2 text-center">
-          {hasOutputs ? (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">PPTX + PDF</span>
-          ) : (
-            <span className="text-[10px] text-muted-foreground">—</span>
-          )}
-        </div>
-      </button>
+      {isMobile ? (
+        <button onClick={onToggle} className="w-full p-4 text-left hover:bg-secondary/30 transition-colors space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              {expanded ? <ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /> : <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />}
+              <span className="text-sm font-medium text-foreground truncate">{t.name}</span>
+            </div>
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded shrink-0 ${statusClass[t.status] || "badge-minor"}`}>{t.status}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1 text-xs ml-5">
+            <div><span className="text-muted-foreground">Type:</span> <span className="text-foreground">{t.inspectionType}</span></div>
+            <div><span className="text-muted-foreground">Standard:</span> <span className="text-foreground">{t.standard}</span></div>
+            <div><span className="text-muted-foreground">Fields:</span> <span className="font-mono text-foreground">{t.fieldCount}</span></div>
+            <div><span className="text-muted-foreground">Reports:</span> {hasOutputs ? <span className="text-emerald-600 dark:text-emerald-400">PPTX + PDF</span> : <span className="text-muted-foreground">—</span>}</div>
+          </div>
+        </button>
+      ) : (
+        <button
+          onClick={onToggle}
+          className="w-full px-5 py-4 grid grid-cols-12 gap-4 items-center text-left hover:bg-secondary/30 transition-colors"
+        >
+          <div className="col-span-4 flex items-center gap-2">
+            {expanded ? <ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /> : <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />}
+            <span className="text-sm font-medium text-foreground">{t.name}</span>
+          </div>
+          <div className="col-span-2 text-xs text-muted-foreground">{t.inspectionType}</div>
+          <div className="col-span-2 text-xs text-muted-foreground">{t.standard}</div>
+          <div className="col-span-1 text-center text-xs font-mono text-muted-foreground">{t.fieldCount}</div>
+          <div className="col-span-1 text-center">
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${statusClass[t.status] || "badge-minor"}`}>{t.status}</span>
+          </div>
+          <div className="col-span-2 text-center">
+            {hasOutputs ? (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">PPTX + PDF</span>
+            ) : (
+              <span className="text-[10px] text-muted-foreground">—</span>
+            )}
+          </div>
+        </button>
+      )}
       {expanded && (
         <TemplateDetail slug={t.slug} onOutputGenerated={setOutputData} />
       )}
@@ -344,7 +388,7 @@ function generateEditTldr(templateName: string, sections: TemplateSection[]): st
 
 /** Inline expanded template detail — fetches full content, shows generate + preview */
 function TemplateDetail({ slug, onOutputGenerated }: { slug: string; onOutputGenerated: (data: OutputData) => void }) {
-  const { data: template, loading: templateLoading } = useApiData<any>(`/api/templates/${slug}`, null);
+  const { data: template, loading: templateLoading } = useApiData<TemplateFullDetail>(`/api/templates/${slug}`, null);
   const { apiPost, apiFetch, apiDownload } = useAuth();
 
   const [generateStatus, setGenerateStatus] = useState<GenerateStatus>("idle");
@@ -360,9 +404,7 @@ function TemplateDetail({ slug, onOutputGenerated }: { slug: string; onOutputGen
   const [reviewComment, setReviewComment] = useState("");
 
   // Load existing outputs on mount
-  const [outputChecked, setOutputChecked] = useState(false);
-  if (!outputChecked) {
-    setOutputChecked(true);
+  useEffect(() => {
     apiFetch<OutputData>(`/api/templates/${slug}/output`).then(data => {
       if (data && data.files && data.files.length > 0) {
         setOutputData(data);
@@ -371,14 +413,13 @@ function TemplateDetail({ slug, onOutputGenerated }: { slug: string; onOutputGen
         loadPdfPreview(slug, data);
       }
     });
-  }
+  }, [slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load PDF blob for iframe preview
   const loadPdfPreview = useCallback(async (templateSlug: string, data: OutputData) => {
     const pdfFile = data.files.find(f => f.format === "pdf");
     if (!pdfFile) return;
     try {
-      const token = (document.cookie.match(/token=([^;]+)/) || [])[1];
       // Fetch with auth
       const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
@@ -693,7 +734,7 @@ function TemplateDetail({ slug, onOutputGenerated }: { slug: string; onOutputGen
 
       {/* Review Modal — batch edit request to Linear */}
       <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Pencil className="h-5 w-5 text-orange-500" />

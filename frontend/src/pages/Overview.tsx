@@ -6,6 +6,7 @@ import { FALLBACK_OVERVIEW } from "@/data/fallbacks";
 import { useState } from "react";
 import { ClientQuickView } from "@/components/ClientQuickView";
 import { PriorityQueue } from "@/components/PriorityQueue";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /** Map signal icon names from API to emoji for display */
 const signalIcons: Record<string, string> = {
@@ -36,6 +37,7 @@ export default function Overview() {
   const navigate = useNavigate();
   const { data, loading } = useApiData<typeof FALLBACK_OVERVIEW>("/api/overview", FALLBACK_OVERVIEW);
   const [quickViewSlug, setQuickViewSlug] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   // weekAtAGlance is frontend-only for now — API doesn't serve it yet, so fall back to static data
   const weekAtAGlance = data.weekAtAGlance ?? FALLBACK_OVERVIEW.weekAtAGlance;
@@ -148,72 +150,98 @@ export default function Overview() {
       )}
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Deployments table */}
+        {/* Deployments table / mobile cards */}
         <div className="xl:col-span-2 rounded-lg border border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Active Deployments</h2>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
-                  <th className="text-left px-5 py-3 font-medium">Client</th>
-                  <th className="text-left px-3 py-3 font-medium">Stage</th>
-                  <th className="text-center px-3 py-3 font-medium">Health</th>
-                  <th className="text-left px-3 py-3 font-medium">Contract</th>
-                  <th className="text-left px-3 py-3 font-medium">Users</th>
-                  <th className="text-left px-3 py-3 font-medium">Adoption</th>
-                  <th className="text-center px-3 py-3 font-medium">Issues</th>
-                  <th className="text-left px-3 py-3 font-medium">Next Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.deployments.map((d) => (
-                  <tr
-                    key={d.slug}
-                    onClick={(e) => {
-                      // Single click → quick view panel
-                      e.stopPropagation();
-                      setQuickViewSlug(quickViewSlug === d.slug ? null : d.slug);
-                    }}
-                    onDoubleClick={() => navigate(`/clients/${d.slug}`)}
-                    className="border-b border-border last:border-0 hover:bg-secondary/50 cursor-pointer transition-colors"
-                  >
-                    <td className="px-5 py-4">
-                      <span className="font-medium text-foreground">{d.client}</span>
-                      <span className="ml-2 text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded bg-secondary">{d.sector}</span>
-                    </td>
-                    <td className="px-3 py-4">
-                      <span className={`text-[11px] font-mono font-medium px-2 py-1 rounded ${stageClass[d.stage] || "badge-intake"}`}>{d.stage}</span>
-                    </td>
-                    <td className="px-3 py-4 text-center">
-                      <span className={`inline-block h-2.5 w-2.5 rounded-full ${healthDot[d.health] || "bg-muted-foreground"}`} />
-                    </td>
-                    <td className="px-3 py-4 font-mono text-foreground">{d.contract}</td>
-                    <td className="px-3 py-4 font-mono text-muted-foreground">{d.users}</td>
-                    <td className="px-3 py-4">
-                      {d.adoption !== null ? (
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 rounded-full bg-secondary overflow-hidden">
-                            <div className="h-full rounded-full bg-primary" style={{ width: `${d.adoption}%` }} />
-                          </div>
-                          <span className="text-xs font-mono text-muted-foreground">{d.adoption}%</span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-4 text-center">
-                      <span className={`font-mono text-xs ${d.hasBlocking ? "text-destructive font-medium" : "text-muted-foreground"}`}>
-                        {d.openIssues}{d.hasBlocking ? " ⚠" : ""}
-                      </span>
-                    </td>
-                    <td className="px-3 py-4 text-xs text-muted-foreground max-w-[200px] truncate">{d.nextAction}</td>
+          {isMobile ? (
+            <div className="divide-y divide-border">
+              {data.deployments.map((d) => (
+                <div
+                  key={d.slug}
+                  onClick={() => navigate(`/clients/${d.slug}`)}
+                  className="p-4 cursor-pointer hover:bg-secondary/50 transition-colors space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium text-foreground truncate">{d.client}</span>
+                      <span className={`inline-block h-2.5 w-2.5 rounded-full shrink-0 ${healthDot[d.health] || "bg-muted-foreground"}`} />
+                    </div>
+                    <span className={`text-[11px] font-mono font-medium px-2 py-1 rounded shrink-0 ${stageClass[d.stage] || "badge-intake"}`}>{d.stage}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div><span className="text-muted-foreground">Contract:</span> <span className="font-mono text-foreground">{d.contract}</span></div>
+                    <div><span className="text-muted-foreground">Users:</span> <span className="font-mono text-foreground">{d.users}</span></div>
+                    <div><span className="text-muted-foreground">Adoption:</span> <span className="font-mono text-foreground">{d.adoption !== null ? `${d.adoption}%` : "—"}</span></div>
+                    <div><span className="text-muted-foreground">Issues:</span> <span className={`font-mono ${d.hasBlocking ? "text-destructive font-medium" : "text-foreground"}`}>{d.openIssues}{d.hasBlocking ? " ⚠" : ""}</span></div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{d.nextAction}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
+                    <th className="text-left px-5 py-3 font-medium">Client</th>
+                    <th className="text-left px-3 py-3 font-medium">Stage</th>
+                    <th className="text-center px-3 py-3 font-medium">Health</th>
+                    <th className="text-left px-3 py-3 font-medium">Contract</th>
+                    <th className="text-left px-3 py-3 font-medium">Users</th>
+                    <th className="text-left px-3 py-3 font-medium">Adoption</th>
+                    <th className="text-center px-3 py-3 font-medium">Issues</th>
+                    <th className="text-left px-3 py-3 font-medium">Next Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {data.deployments.map((d) => (
+                    <tr
+                      key={d.slug}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setQuickViewSlug(quickViewSlug === d.slug ? null : d.slug);
+                      }}
+                      onDoubleClick={() => navigate(`/clients/${d.slug}`)}
+                      className="border-b border-border last:border-0 hover:bg-secondary/50 cursor-pointer transition-colors"
+                    >
+                      <td className="px-5 py-4">
+                        <span className="font-medium text-foreground">{d.client}</span>
+                        <span className="ml-2 text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded bg-secondary">{d.sector}</span>
+                      </td>
+                      <td className="px-3 py-4">
+                        <span className={`text-[11px] font-mono font-medium px-2 py-1 rounded ${stageClass[d.stage] || "badge-intake"}`}>{d.stage}</span>
+                      </td>
+                      <td className="px-3 py-4 text-center">
+                        <span className={`inline-block h-2.5 w-2.5 rounded-full ${healthDot[d.health] || "bg-muted-foreground"}`} />
+                      </td>
+                      <td className="px-3 py-4 font-mono text-foreground">{d.contract}</td>
+                      <td className="px-3 py-4 font-mono text-muted-foreground">{d.users}</td>
+                      <td className="px-3 py-4">
+                        {d.adoption !== null ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 h-1.5 rounded-full bg-secondary overflow-hidden">
+                              <div className="h-full rounded-full bg-primary" style={{ width: `${d.adoption}%` }} />
+                            </div>
+                            <span className="text-xs font-mono text-muted-foreground">{d.adoption}%</span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-4 text-center">
+                        <span className={`font-mono text-xs ${d.hasBlocking ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+                          {d.openIssues}{d.hasBlocking ? " ⚠" : ""}
+                        </span>
+                      </td>
+                      <td className="px-3 py-4 text-xs text-muted-foreground max-w-[200px] truncate">{d.nextAction}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Signal Feed */}

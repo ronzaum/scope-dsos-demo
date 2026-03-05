@@ -68,10 +68,22 @@ function auditMiddleware(req, res, next) {
 function readAuditLog(limit = 100) {
   if (!fs.existsSync(LOG_FILE)) return [];
 
-  const content = fs.readFileSync(LOG_FILE, 'utf-8').trim();
+  // Read only the last 512KB to cap memory usage on large log files
+  const MAX_BYTES = 512 * 1024;
+  const stat = fs.statSync(LOG_FILE);
+  const readStart = Math.max(0, stat.size - MAX_BYTES);
+  const buffer = Buffer.alloc(Math.min(stat.size, MAX_BYTES));
+  const fd = fs.openSync(LOG_FILE, 'r');
+  fs.readSync(fd, buffer, 0, buffer.length, readStart);
+  fs.closeSync(fd);
+
+  const content = buffer.toString('utf-8').trim();
   if (!content) return [];
 
   const lines = content.split('\n');
+  // If we started mid-file, the first line is likely truncated — skip it
+  if (readStart > 0) lines.shift();
+
   const entries = [];
 
   // Parse from the end for newest-first ordering

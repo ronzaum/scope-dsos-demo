@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BoxSelect } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /** Cell data from the API grid response */
 interface GridCell {
@@ -79,6 +80,7 @@ interface PatternGridProps {
  * Template columns grouped by inspection family with extra gap separator.
  */
 export function PatternGrid({ grid, coreBlocks = [], isDS = false, selectedSections = [], onSelectionChange }: PatternGridProps) {
+  const isMobile = useIsMobile();
   const [templateFilter, setTemplateFilter] = useState<Set<string>>(new Set());
 
   // Hover tooltip state: which cell is hovered and where the cursor is
@@ -193,7 +195,7 @@ export function PatternGrid({ grid, coreBlocks = [], isDS = false, selectedSecti
       {/* Mosaic heatmap grid */}
       <div className="overflow-x-auto">
         {/* X-axis labels (template names) */}
-        <div className="flex items-end mb-1" style={{ paddingLeft: isDS ? "calc(24px + 180px)" : "180px" }}>
+        <div className="flex items-end mb-1" style={{ paddingLeft: isDS ? (isMobile ? "calc(24px + 80px)" : "calc(24px + 180px)") : (isMobile ? "80px" : "180px") }}>
           {visibleColumns.map(({ template: t, isFirstInGroup }) => (
             <div
               key={t.slug}
@@ -230,7 +232,7 @@ export function PatternGrid({ grid, coreBlocks = [], isDS = false, selectedSecti
               )}
 
               {/* Y-axis section label */}
-              <div className="w-[180px] shrink-0 pr-3 flex items-center gap-1.5 min-h-[28px]">
+              <div className={`${isMobile ? "w-[80px]" : "w-[180px]"} shrink-0 pr-3 flex items-center gap-1.5 min-h-[28px]`}>
                 {isCoreBlock && (
                   <BoxSelect className="h-3 w-3 text-primary shrink-0" title="Part of a core block" />
                 )}

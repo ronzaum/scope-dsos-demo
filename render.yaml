@@ -9,3 +9,11 @@ services:
         value: production
       - key: DSOS_JWT_SECRET
         generateValue: true
+      - key: LINEAR_TEAM_ID
+        sync: false
+      - key: LINEAR_PROJECT_ID
+        sync: false
+      - key: LINEAR_ASSIGNEE_ID
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false

@@ -2,6 +2,47 @@
 
 ## Unreleased
 
+### Security
+
+- **RON-35 — Code Review: Path Traversal Fix** — `GET /api/templates/:slug/output` and `GET /api/templates/:slug/output/:filename` now validate `slug` against the template cache before constructing file paths. Previously a crafted slug could traverse the filesystem
+- **RON-35 — JWT Secret Hardening** — Server throws on startup if `DSOS_JWT_SECRET` is not set when `NODE_ENV=production`. Demo fallback (`dsos-demo-secret-change-in-production`) still works in local dev
+
+### Fixed
+
+- **RON-35 — Render-time state updates** — `TemplateRow` and `TemplateDetail` in `Templates.tsx` no longer call `setState` during render. Replaced `if (!checked)` pattern with `useEffect` on mount. Fixes React Strict Mode double-fire and console warnings
+- **RON-35 — Uncaught JSON.parse crash** — Edit request file read (`api/server.js`) now wrapped in try-catch, defaults to `[]` on parse failure instead of crashing the request
+- **RON-35 — Audit log memory cap** — `readAuditLog()` reads last 512KB of the log file instead of loading the entire file into memory
+
+### Changed
+
+- **RON-35 — CORS restricted** — `cors()` now reads `ALLOWED_ORIGINS` env var (comma-separated). Falls back to permissive (`true`) when unset for local dev
+- **RON-35 — Linear IDs to env vars** — `LINEAR_TEAM_ID`, `LINEAR_PROJECT_ID`, `LINEAR_ASSIGNEE_ID` moved from hardcoded values in `server.js` to `api/.env` and `render.yaml`
+- **RON-35 — Linear API timeouts** — All 3 Linear `fetch()` calls now have `AbortSignal.timeout(10000)` (10s)
+- **RON-35 — Type safety** — `Templates.tsx`: `useApiData<any>` replaced with `TemplatesResponse`, `TemplateListItem`, `TemplateFullDetail` interfaces. `Knowledge.tsx` and `KnowledgePanel.tsx`: `data: any` replaced with `Record<string, unknown>`
+
+### Removed
+
+- Dead `document.cookie.match()` line in `TemplateDetail` (`Templates.tsx`)
+- `console.error` + `useEffect`/`useLocation` imports in `NotFound.tsx`
+
+### Added
+
+- **FE-025 / RON-34 — iPhone / Mobile Compatibility (375px)**
+  - **Sidebar:** Hidden below 768px. Hamburger button (top-left) opens overlay sidebar with backdrop. Closes on nav click or backdrop tap. Desktop sidebar unchanged
+  - **Layout:** `ml-0 md:ml-14 lg:ml-56` margins, `p-4 md:p-6 lg:p-8` padding for full-width mobile content
+  - **Panels:** ClientQuickView (`w-full sm:w-96`), KnowledgePanel (`w-full sm:w-[400px]`), Templates review dialog (`max-w-[calc(100vw-2rem)] sm:max-w-2xl`) — all full-width on mobile, fixed-width on desktop
+  - **Tables to cards:** 7 tables converted to stacked card layouts on mobile via `useIsMobile()` conditional renders — Overview deployments, Playbook metrics benchmarks, Playbook method registry, ClientConstraintMap user map + product match, ClientOverview intervention triggers. All existing table code preserved for desktop
+  - **Templates:** Grid-cols-12 header hidden on mobile, TemplateRow renders as card with key-value pairs. `isMobile` prop threaded through
+  - **PatternGrid:** Y-axis label width reduced from 180px to 80px on mobile. Already had `overflow-x-auto`
+  - **ClientDetail tabs:** Padding `px-2.5 sm:px-4`, fade gradient on right edge for scroll hint (hidden above `sm:`)
+  - **ClientList:** Metric grid `grid-cols-2 sm:grid-cols-3`
+  - **Knowledge page:** Flex gap `gap-4 lg:gap-6`
+  - 12 files changed, 0 files created. No changes to `index.css`, `tailwind.config.ts`, `App.tsx`, `components/ui/*`, or `contexts/*`. No existing breakpoint classes removed
+
+### Changed
+
+- **README.md — Complete rewrite** — Product-focused README for public GitHub repo. Replaced 95-line command reference with full system documentation: three-interface lead (frontend, API, commands), 7 mermaid diagrams (architecture, security middleware flow, file watching sequence, compounding intelligence, 4 pipeline flows), frontend page descriptions, full API endpoint reference, data model with client schema, security preview with role permissions matrix, tech stack, local setup instructions, Render deployment config, simulated data disclaimer. Table of contents. No trial day/Friday content.
+
 ### Added
 
 - **FE-015 / RON-20 — Deploy DS-OS as a Shareable URL**

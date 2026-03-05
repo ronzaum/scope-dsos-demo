@@ -11,7 +11,7 @@ interface KnowledgeSection {
   title: string;
   icon: string;
   description: string;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 interface KnowledgeResponse {
@@ -105,7 +105,7 @@ export default function Knowledge() {
       </div>
 
       {/* Layout: cards on left, detail panel on right when a section is selected */}
-      <div className={`flex gap-6 ${expandedSection ? "flex-col lg:flex-row" : ""}`}>
+      <div className={`flex gap-4 lg:gap-6 ${expandedSection ? "flex-col lg:flex-row" : ""}`}>
         {/* Card grid */}
         <div className={expandedSection ? "w-full lg:w-[40%] shrink-0" : "w-full"}>
           <div className={`grid gap-4 ${

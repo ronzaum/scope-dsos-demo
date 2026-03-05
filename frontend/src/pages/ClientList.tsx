@@ -102,7 +102,7 @@ export default function ClientList() {
                   </div>
 
                   {/* Metrics row */}
-                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-border">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-3 border-t border-border">
                     {/* Users */}
                     <div>
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground block mb-1">Users</span>

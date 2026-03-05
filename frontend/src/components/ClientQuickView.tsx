@@ -83,7 +83,7 @@ export function ClientQuickView({ slug, onClose, onNavigate }: ClientQuickViewPr
   return (
     <div
       ref={panelRef}
-      className="fixed right-0 top-0 z-50 h-screen w-96 border-l border-border bg-card shadow-2xl overflow-y-auto animate-in slide-in-from-right"
+      className="fixed right-0 top-0 z-50 h-screen w-full sm:w-96 max-w-[100vw] border-l border-border bg-card shadow-2xl overflow-y-auto animate-in slide-in-from-right"
     >
       {/* Header */}
       <div className="sticky top-0 bg-card border-b border-border px-5 py-4 flex items-center justify-between z-10">

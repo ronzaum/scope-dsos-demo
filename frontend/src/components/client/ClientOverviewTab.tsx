@@ -1,5 +1,6 @@
 import { IssueResolution } from "@/components/charts/IssueResolution";
 import { TrendingUp, TrendingDown, Activity, AlertTriangle } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { ClientApiResponse, ClientIssue, ClientInteraction } from "@/types/client";
 
 /** Parse "X active daily" or user count from deployment state strings */
@@ -53,6 +54,7 @@ function deriveInterventionTriggers(interactions: ClientInteraction[], issues: C
 
 /** Renders Profile, Commercial, Deployment State, Quick Metrics, KPIs */
 export function ClientOverviewTab({ client }: { client: ClientApiResponse }) {
+  const isMobile = useIsMobile();
   const profile = client.profile || {};
   const commercial = client.commercial || {};
   const ds = client.deploymentState || {};
@@ -210,32 +212,49 @@ export function ClientOverviewTab({ client }: { client: ClientApiResponse }) {
             <AlertTriangle className="h-3.5 w-3.5 text-warning" />
             <h3 className="text-sm font-semibold text-foreground">Intervention Triggers</h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
-                  <th className="text-left px-5 py-3 font-medium">Date</th>
-                  <th className="text-left px-3 py-3 font-medium">Trigger</th>
-                  <th className="text-left px-3 py-3 font-medium">Action</th>
-                  <th className="text-left px-3 py-3 font-medium">Outcome</th>
-                </tr>
-              </thead>
-              <tbody>
-                {interventionTriggers.map((t, i) => (
-                  <tr key={i} className="border-b border-border last:border-0">
-                    <td className="px-5 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">{t.date}</td>
-                    <td className="px-3 py-3 text-foreground text-xs">{t.metric}</td>
-                    <td className="px-3 py-3 text-muted-foreground text-xs max-w-[250px] truncate">{t.action}</td>
-                    <td className="px-3 py-3">
-                      <span className={`text-[11px] font-mono px-2 py-1 rounded ${
-                        t.outcome.includes("Resolved") || t.outcome === "Achieved" ? "badge-phase2" : "badge-minor"
-                      }`}>{t.outcome}</span>
-                    </td>
+          {isMobile ? (
+            <div className="divide-y divide-border">
+              {interventionTriggers.map((t, i) => (
+                <div key={i} className="p-4 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs text-muted-foreground">{t.date}</span>
+                    <span className={`text-[11px] font-mono px-2 py-1 rounded shrink-0 ${
+                      t.outcome.includes("Resolved") || t.outcome === "Achieved" ? "badge-phase2" : "badge-minor"
+                    }`}>{t.outcome}</span>
+                  </div>
+                  <div className="text-xs"><span className="text-muted-foreground">Trigger:</span> <span className="text-foreground">{t.metric}</span></div>
+                  <div className="text-xs"><span className="text-muted-foreground">Action:</span> <span className="text-foreground">{t.action}</span></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
+                    <th className="text-left px-5 py-3 font-medium">Date</th>
+                    <th className="text-left px-3 py-3 font-medium">Trigger</th>
+                    <th className="text-left px-3 py-3 font-medium">Action</th>
+                    <th className="text-left px-3 py-3 font-medium">Outcome</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {interventionTriggers.map((t, i) => (
+                    <tr key={i} className="border-b border-border last:border-0">
+                      <td className="px-5 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">{t.date}</td>
+                      <td className="px-3 py-3 text-foreground text-xs">{t.metric}</td>
+                      <td className="px-3 py-3 text-muted-foreground text-xs max-w-[250px] truncate">{t.action}</td>
+                      <td className="px-3 py-3">
+                        <span className={`text-[11px] font-mono px-2 py-1 rounded ${
+                          t.outcome.includes("Resolved") || t.outcome === "Achieved" ? "badge-phase2" : "badge-minor"
+                        }`}>{t.outcome}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

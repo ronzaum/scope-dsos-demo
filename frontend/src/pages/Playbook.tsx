@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useApiData } from "@/hooks/useApiData";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { FALLBACK_PLAYBOOK, FALLBACK_METHODS } from "@/data/fallbacks";
 
 /** Map known client names to their route slugs */
@@ -112,6 +113,7 @@ export default function Playbook() {
     );
   }
 
+  const isMobile = useIsMobile();
   const deploymentPatterns = playbook.deploymentPatterns || [];
   const resolutionPatterns = playbook.resolutionPatterns || [];
   const methods = methodsData.methods || [];
@@ -161,53 +163,84 @@ export default function Playbook() {
       {metricsBenchmarks.length > 0 && (
         <section className="mb-8">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Metrics Benchmarks</h2>
-          <div className="rounded-lg border border-border bg-card">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead><tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
-                  <th className="text-left px-5 py-3 font-medium">Metric</th>
-                  <th className="text-left px-3 py-3 font-medium">Bureau Veritas (Month 3)</th>
-                  <th className="text-left px-3 py-3 font-medium">TUV SUD (Month 5)</th>
-                  <th className="text-left px-3 py-3 font-medium">Target</th>
-                </tr></thead>
-                <tbody>{metricsBenchmarks.map((row: any, i: number) => (
-                  <tr key={i} className="border-b border-border last:border-0">
-                    <td className="px-5 py-3 text-foreground font-medium">{row.metric}</td>
-                    <td className="px-3 py-3 text-muted-foreground">{row.bureauVeritasMonth3 || row["Bureau Veritas (Month 3)"] || ""}</td>
-                    <td className="px-3 py-3 text-muted-foreground">{row.tuvSudMonth5 || row["TÜV SÜD (Month 5)"] || ""}</td>
-                    <td className="px-3 py-3 text-muted-foreground">{row.target}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
+          {isMobile ? (
+            <div className="space-y-3">
+              {metricsBenchmarks.map((row: any, i: number) => (
+                <div key={i} className="rounded-lg border border-border bg-card p-4 space-y-2">
+                  <h4 className="text-sm font-medium text-foreground">{row.metric}</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div><span className="text-muted-foreground">BV (Mo 3):</span> <span className="text-foreground">{row.bureauVeritasMonth3 || row["Bureau Veritas (Month 3)"] || "—"}</span></div>
+                    <div><span className="text-muted-foreground">TUV (Mo 5):</span> <span className="text-foreground">{row.tuvSudMonth5 || row["TÜV SÜD (Month 5)"] || "—"}</span></div>
+                    <div className="col-span-2"><span className="text-muted-foreground">Target:</span> <span className="text-foreground">{row.target}</span></div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="rounded-lg border border-border bg-card">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
+                    <th className="text-left px-5 py-3 font-medium">Metric</th>
+                    <th className="text-left px-3 py-3 font-medium">Bureau Veritas (Month 3)</th>
+                    <th className="text-left px-3 py-3 font-medium">TUV SUD (Month 5)</th>
+                    <th className="text-left px-3 py-3 font-medium">Target</th>
+                  </tr></thead>
+                  <tbody>{metricsBenchmarks.map((row: any, i: number) => (
+                    <tr key={i} className="border-b border-border last:border-0">
+                      <td className="px-5 py-3 text-foreground font-medium">{row.metric}</td>
+                      <td className="px-3 py-3 text-muted-foreground">{row.bureauVeritasMonth3 || row["Bureau Veritas (Month 3)"] || ""}</td>
+                      <td className="px-3 py-3 text-muted-foreground">{row.tuvSudMonth5 || row["TÜV SÜD (Month 5)"] || ""}</td>
+                      <td className="px-3 py-3 text-muted-foreground">{row.target}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </section>
       )}
 
       {/* Method Registry */}
       <section className="mb-8">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Method Registry</h2>
-        <div className="rounded-lg border border-border bg-card">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead><tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
-                <th className="text-left px-5 py-3 font-medium">Method</th>
-                <th className="text-left px-3 py-3 font-medium">Status</th>
-                <th className="text-left px-3 py-3 font-medium">Conditions</th>
-                <th className="text-left px-3 py-3 font-medium">Last Validated</th>
-              </tr></thead>
-              <tbody>{methods.map((m: any, i: number) => (
-                <tr key={i} className="border-b border-border last:border-0">
-                  <td className="px-5 py-3 text-foreground font-medium">{m.name || m.method}</td>
-                  <td className="px-3 py-3"><span className={`text-[11px] font-mono px-2 py-1 rounded ${methodStatusClass(m.status)}`}>{m.status}</span></td>
-                  <td className="px-3 py-3 text-muted-foreground">{m.conditions}</td>
-                  <td className="px-3 py-3 text-muted-foreground">{m.lastValidated}</td>
-                </tr>
-              ))}</tbody>
-            </table>
+        {isMobile ? (
+          <div className="space-y-3">
+            {methods.map((m: any, i: number) => (
+              <div key={i} className="rounded-lg border border-border bg-card p-4 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="text-sm font-medium text-foreground">{m.name || m.method}</h4>
+                  <span className={`text-[11px] font-mono px-2 py-1 rounded shrink-0 ${methodStatusClass(m.status)}`}>{m.status}</span>
+                </div>
+                <div className="text-xs space-y-1">
+                  <div><span className="text-muted-foreground">Conditions:</span> <span className="text-foreground">{m.conditions}</span></div>
+                  <div><span className="text-muted-foreground">Last Validated:</span> <span className="text-foreground">{m.lastValidated}</span></div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-
+        ) : (
+          <div className="rounded-lg border border-border bg-card">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
+                  <th className="text-left px-5 py-3 font-medium">Method</th>
+                  <th className="text-left px-3 py-3 font-medium">Status</th>
+                  <th className="text-left px-3 py-3 font-medium">Conditions</th>
+                  <th className="text-left px-3 py-3 font-medium">Last Validated</th>
+                </tr></thead>
+                <tbody>{methods.map((m: any, i: number) => (
+                  <tr key={i} className="border-b border-border last:border-0">
+                    <td className="px-5 py-3 text-foreground font-medium">{m.name || m.method}</td>
+                    <td className="px-3 py-3"><span className={`text-[11px] font-mono px-2 py-1 rounded ${methodStatusClass(m.status)}`}>{m.status}</span></td>
+                    <td className="px-3 py-3 text-muted-foreground">{m.conditions}</td>
+                    <td className="px-3 py-3 text-muted-foreground">{m.lastValidated}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </section>
 
     </Layout>
