@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applus+ UK — Scope AI Deployment</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slide {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    padding: 60px 80px;
+    position: relative;
+  }
+
+  .slide.active { display: flex; }
+
+  /* Title slide */
+  .slide-title h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .slide-title h2 {
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: #888;
+    margin-bottom: 40px;
+  }
+  .slide-title .meta {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  /* Section headers */
+  .slide-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
+  }
+  .slide-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  .slide-section .subtitle {
+    font-size: 1.3rem;
+    color: #888;
+    margin-top: 12px;
+  }
+
+  /* Internal section header */
+  .slide-internal {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border-top: 3px solid #333;
+  }
+
+  /* Content slides */
+  .slide-content {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 80px;
+  }
+  .slide-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .slide-content h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    margin-top: 24px;
+    color: #ccc;
+  }
+
+  /* Emotional hook subtitle */
+  .hook {
+    font-size: 1.05rem;
+    color: #888;
+    font-weight: 400;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  /* Accent color */
+  .accent { color: #4f8cff; }
+  .accent-green { color: #34d399; }
+  .accent-orange { color: #fb923c; }
+  .accent-red { color: #f87171; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 1rem;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid #333;
+    color: #888;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  tr:hover td { background: #111; }
+
+  /* Stats grid */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    width: 100%;
+    margin: 24px 0;
+  }
+  .stat {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .stat .number {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stat .label {
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  /* Two column */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    width: 100%;
+  }
+
+  /* Three column for pricing */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .col {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .col h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  .col ul {
+    list-style: none;
+    padding: 0;
+  }
+  .col ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .col ul li:last-child { border-bottom: none; }
+
+  /* Comparison */
+  .vs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    width: 100%;
+    align-items: center;
+  }
+  .vs-divider {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+  }
+  .vs-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .vs-card.old { border-color: #7f1d1d; }
+  .vs-card.new { border-color: #064e3b; }
+  .vs-card h3 { margin-top: 0; }
+  .vs-card .time {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 16px 0;
+  }
+  .vs-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .vs-card ul li {
+    padding: 6px 0;
+    font-size: 0.95rem;
+    color: #aaa;
+  }
+  .vs-icon { margin-right: 8px; }
+
+  /* Bullet list */
+  .bullets {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  .bullets li {
+    padding: 14px 0;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  .bullets li:last-child { border-bottom: none; }
+  .bullets .num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: #4f8cff;
+    color: #000;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-right: 12px;
+  }
+
+  /* Pain point grid */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .pain-item {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .pain-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 32px;
+    text-align: center;
+  }
+  .pain-text strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+  }
+  .pain-text span {
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.4;
+  }
+
+  /* ROI highlight */
+  .roi-box {
+    background: linear-gradient(135deg, #064e3b 0%, #111 100%);
+    border: 1px solid #34d399;
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    width: 100%;
+    margin: 24px 0;
+  }
+  .roi-box .big {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #34d399;
+  }
+  .roi-box .sub {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-top: 8px;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 32px;
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav button {
+    background: #222;
+    border: 1px solid #333;
+    color: #888;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .nav button:hover { background: #333; color: #fff; }
+
+  .page-number {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    color: #444;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* Demo slide special */
+  .demo-prompt {
+    background: #111;
+    border: 2px dashed #4f8cff;
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    width: 80%;
+  }
+  .demo-prompt h2 {
+    margin-bottom: 16px;
+  }
+  .demo-prompt p {
+    color: #888;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  /* Pricing recommended */
+  .recommended {
+    border-color: #4f8cff !important;
+    position: relative;
+  }
+  .recommended::after {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: #4f8cff;
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  .small { font-size: 0.85rem; color: #666; margin-top: 8px; }
+
+  /* Risk table colors */
+  .sev-high { color: #f87171; font-weight: 600; }
+  .sev-med { color: #fb923c; font-weight: 600; }
+  .sev-low { color: #34d399; font-weight: 600; }
+
+  /* Timeline for customer-facing */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .timeline-phase {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+  }
+  .timeline-phase::after {
+    content: '';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid #333;
+  }
+  .timeline-phase:last-child::after { display: none; }
+  .timeline-phase .phase-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #4f8cff;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .timeline-phase .phase-time {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 12px;
+  }
+  .timeline-phase .phase-sites {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #34d399;
+    margin-bottom: 4px;
+  }
+  .timeline-phase .phase-people {
+    font-size: 0.9rem;
+    color: #34d399;
+  }
+  .timeline-phase .phase-value {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #222;
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+  .timeline-phase .phase-value strong {
+    color: #34d399;
+  }
+
+  /* Internal badge */
+  .internal-badge {
+    display: inline-block;
+    background: #333;
+    color: #aaa;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Risk cards */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+  }
+  .risk-card {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 20px 24px;
+    border-left: 3px solid;
+  }
+  .risk-card.high { border-left-color: #f87171; }
+  .risk-card.med { border-left-color: #fb923c; }
+  .risk-card.low { border-left-color: #34d399; }
+  .risk-card .risk-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .risk-card .risk-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .risk-card .risk-fix {
+    font-size: 0.9rem;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- CUSTOMER-FACING SECTION (Slides 1-10)        -->
+<!-- ============================================ -->
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide-title active" id="s1">
+  <h1>Applus+ UK <span class="accent">x</span> Scope AI</h1>
+  <h2>Deployment Strategy & Pricing</h2>
+  <p class="meta">Prepared by Ron Zaum | 6 March 2026</p>
+</div>
+
+<!-- SLIDE 2: The Problem -->
+<div class="slide slide-section" id="s2">
+  <h1>The Problem</h1>
+  <p class="subtitle" style="max-width: 700px; text-align: center; line-height: 1.6;"><em>"I write everything twice — once in the field, once back at my desk. Especially when it rains."</em></p>
+  <p style="font-size: 0.95rem; color: #555; margin-top: 16px;">— Scott Lindsay, Senior Inspector, Applus+ UK</p>
+</div>
+
+<!-- SLIDE 3: Current State -->
+<div class="slide slide-content" id="s3">
+  <h2>Scott's World Today</h2>
+  <p class="hook">Every report written twice. Every photo pasted by hand.</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="number accent-red">3 hrs</div>
+      <div class="label">Per report in Word</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-red">73,470</div>
+      <div class="label">Reports / year</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-red">220,410</div>
+      <div class="label">Hours on reports / year</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-red">5</div>
+      <div class="label">Sites across UK</div>
+    </div>
+  </div>
+  <div class="pain-grid">
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#9998;</div>
+      <div class="pain-text">
+        <strong>Double handling</strong>
+        <span>Field notes rewritten into Word. 1hr+ just on reconstruction</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#128247;</div>
+      <div class="pain-text">
+        <strong>"200 photos = afternoon gone"</strong>
+        <span>Pasted, resized, captioned one by one. All named IMG_XXXX</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#9729;</div>
+      <div class="pain-text">
+        <strong>Weather kills notes</strong>
+        <span>Rain = minimal field notes = even longer reconstruction</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#128269;</div>
+      <div class="pain-text">
+        <strong>Supervisors trapped formatting</strong>
+        <span>Chasing "what did this note mean?" instead of reviewing quality</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#9888;</div>
+      <div class="pain-text">
+        <strong>Shutdown spikes</strong>
+        <span>Normal: 5 reports/day. Shutdowns: 30-40. Can't staff for both</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-icon accent-red">&#128187;</div>
+      <div class="pain-text">
+        <strong>Reports in the car</strong>
+        <span>Clevedon: no meeting rooms. Supervisors finish reports on laptops in the car park</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Before / After -->
+<div class="slide slide-content" id="s4">
+  <h2>Before & After</h2>
+  <p class="hook">"As long as it works and doesn't add more clicks, I'm fine." — Scott</p>
+  <div class="vs">
+    <div class="vs-card old">
+      <h3 class="accent-red">Today</h3>
+      <div class="time accent-red">~3 hours</div>
+      <ul>
+        <li><span class="vs-icon accent-red">&#10005;</span> Paper notes on site</li>
+        <li><span class="vs-icon accent-red">&#10005;</span> Drive back to office</li>
+        <li><span class="vs-icon accent-red">&#10005;</span> Rewrite into Word template</li>
+        <li><span class="vs-icon accent-red">&#10005;</span> Transfer, paste, resize photos</li>
+        <li><span class="vs-icon accent-red">&#10005;</span> Format, check, email</li>
+      </ul>
+    </div>
+    <div class="vs-divider">VS</div>
+    <div class="vs-card new">
+      <h3 class="accent-green">With Scope</h3>
+      <div class="time accent-green">~1 hour</div>
+      <ul>
+        <li><span class="vs-icon accent-green">&#10003;</span> Fill in report on phone, on site</li>
+        <li><span class="vs-icon accent-green">&#10003;</span> Photos go straight into report</li>
+        <li><span class="vs-icon accent-green">&#10003;</span> Hit submit, report auto-generates</li>
+        <li><span class="vs-icon accent-green">&#10003;</span> Reviewer gets it instantly</li>
+        <li style="color: #34d399; font-weight: 600; padding-top: 8px;"><span class="vs-icon">&#10003;</span> Done before he leaves site</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Demo -->
+<div class="slide slide-content" id="s5" style="justify-content: center; align-items: center;">
+  <div class="demo-prompt">
+    <h2 class="accent">Live Demo</h2>
+    <p>Scott's UT Thickness Testing report — Tank T-204, INEOS Grangemouth</p>
+    <p style="margin-top: 16px; color: #4f8cff;">Show on phone: fill in report on-site, submit, report generates</p>
+    <p style="margin-top: 24px; font-size: 0.9rem; color: #555;">Open app.getscope.ai on your phone now</p>
+  </div>
+</div>
+
+<!-- SLIDE 6: Value Created -->
+<div class="slide slide-content" id="s6">
+  <h2>Value Created for Applus+</h2>
+  <p class="hook">What 2 hours back per report looks like at scale.</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="number accent-green">2 hrs</div>
+      <div class="label">Saved per report</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-green">146,940</div>
+      <div class="label">Hours saved / year</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-green">&#163;3.67M</div>
+      <div class="label">Annual value</div>
+    </div>
+    <div class="stat">
+      <div class="number accent">&#163;25/hr</div>
+      <div class="label">Effective inspector rate</div>
+    </div>
+  </div>
+  <div class="roi-box" style="margin-top: 32px;">
+    <div class="big">&#163;3.67M / year</div>
+    <div class="sub">Total value of time returned to Applus+ UK</div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Pricing Options (3 boxes) -->
+<div class="slide slide-content" id="s7">
+  <h2>Pricing Options</h2>
+  <p class="hook">Three models. You keep 75-85% of the value created.</p>
+  <div class="three-col" style="margin-top: 8px;">
+    <div class="col">
+      <h3>Essentials</h3>
+      <p style="color: #888; font-size: 0.85rem; margin-bottom: 16px;">Pay per report, no commitment</p>
+      <table>
+        <tr><td>Per report</td><td><strong>&#163;8-12</strong></td></tr>
+        <tr><td>Platform</td><td>Included</td></tr>
+        <tr><td style="border-bottom: 2px solid #333;">Annual cost</td><td style="border-bottom: 2px solid #333;"><strong class="accent">&#163;587k-882k</strong></td></tr>
+      </table>
+      <ul style="margin-top: 12px;">
+        <li>Simple, usage-based</li>
+        <li>No fixed commitment</li>
+        <li>Standard support</li>
+      </ul>
+      <p class="small">You keep 76-84% of value</p>
+    </div>
+    <div class="col recommended">
+      <h3>Partnership</h3>
+      <p style="color: #888; font-size: 0.85rem; margin-bottom: 16px;">Platform + per report. Best of both.</p>
+      <table>
+        <tr><td>Platform fee</td><td><strong>&#163;3k/site/mo</strong></td></tr>
+        <tr><td>Per report</td><td><strong>&#163;5-7</strong></td></tr>
+        <tr><td>Guaranteed floor</td><td><strong>&#163;180k/yr</strong></td></tr>
+        <tr><td style="border-bottom: 2px solid #333;">Annual cost</td><td style="border-bottom: 2px solid #333;"><strong class="accent">&#163;547k-694k</strong></td></tr>
+      </table>
+      <ul style="margin-top: 12px;">
+        <li>Lower per-report cost</li>
+        <li>Priority support & onboarding</li>
+        <li>Dedicated account team</li>
+      </ul>
+      <p class="small">You keep 81-85% of value</p>
+    </div>
+    <div class="col" style="border-color: #333;">
+      <h3>Enterprise</h3>
+      <p style="color: #888; font-size: 0.85rem; margin-bottom: 16px;">Full platform. All integrations.</p>
+      <table>
+        <tr><td>Platform fee</td><td><strong>&#163;5k/site/mo</strong></td></tr>
+        <tr><td>Per report</td><td><strong>&#163;5-7</strong></td></tr>
+        <tr><td>SkillStation</td><td><strong>&#163;2k/site/mo</strong></td></tr>
+        <tr><td style="border-bottom: 2px solid #333;">Annual cost</td><td style="border-bottom: 2px solid #333;"><strong class="accent">&#163;787k-934k</strong></td></tr>
+      </table>
+      <ul style="margin-top: 12px;">
+        <li>SkillStation integration</li>
+        <li>Custom dashboards & API</li>
+        <li>Dedicated CSM</li>
+        <li>White-glove onboarding</li>
+      </ul>
+      <p class="small">You keep 75-79% of value</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Customer Timeline -->
+<div class="slide slide-content" id="s8">
+  <h2>Rollout Timeline</h2>
+  <p class="hook">"If the client hates the new format, it's a non-starter." — Jon. So we validate at every step.</p>
+  <div class="timeline">
+    <div class="timeline-phase">
+      <div class="phase-label">Phase 1: Pilot</div>
+      <div class="phase-time">Month 1-2</div>
+      <div class="phase-sites">Grangemouth</div>
+      <div class="phase-people">14 inspectors</div>
+      <div class="phase-value">UT thickness reports<br><strong>&#163;980k value/yr</strong></div>
+    </div>
+    <div class="timeline-phase">
+      <div class="phase-label">Phase 2: Expand</div>
+      <div class="phase-time">Month 3-4</div>
+      <div class="phase-sites">+ Falkirk</div>
+      <div class="phase-people">47 inspectors</div>
+      <div class="phase-value">Broader report types<br><strong>&#163;1.64M value/yr</strong></div>
+    </div>
+    <div class="timeline-phase">
+      <div class="phase-label">Phase 3: Scale</div>
+      <div class="phase-time">Month 5-8</div>
+      <div class="phase-sites">+ Yarmouth + Clevedon</div>
+      <div class="phase-people">100 inspectors</div>
+      <div class="phase-value">Offline-first rollout<br><strong>&#163;2.66M value/yr</strong></div>
+    </div>
+    <div class="timeline-phase">
+      <div class="phase-label">Phase 4: Full</div>
+      <div class="phase-time">Month 9-12</div>
+      <div class="phase-sites">+ Advanced NDT</div>
+      <div class="phase-people">120 inspectors</div>
+      <div class="phase-value">All report types<br><strong>&#163;3.67M value/yr</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Summary -->
+<div class="slide slide-content" id="s9" style="justify-content: center; align-items: center;">
+  <h2 style="font-size: 2.4rem; text-align: center; margin-bottom: 8px;">What Applus+ Gets</h2>
+  <p class="hook" style="text-align: center;">The same inspection. A fraction of the time.</p>
+  <div class="stats" style="max-width: 900px;">
+    <div class="stat">
+      <div class="number accent-green">3 hrs &rarr; 1 hr</div>
+      <div class="label">Report time</div>
+    </div>
+    <div class="stat">
+      <div class="number accent">120</div>
+      <div class="label">Inspectors empowered</div>
+    </div>
+    <div class="stat">
+      <div class="number accent-green">&#163;3.67M</div>
+      <div class="label">Value unlocked / year</div>
+    </div>
+    <div class="stat">
+      <div class="number accent">12 mo</div>
+      <div class="label">Full rollout</div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 48px;">
+    <p style="font-size: 1.3rem; color: #888;">Scott fills in his report on his phone. On site. Even in the rain.</p>
+    <p style="font-size: 1.3rem; color: #888; margin-top: 8px;">No rewriting. No photo pasting. No "what did this note mean?"</p>
+  </div>
+</div>
+
+<!-- SLIDE 10: Customer Next Steps -->
+<div class="slide slide-content" id="s10" style="justify-content: center; align-items: center;">
+  <h2 style="font-size: 2.4rem; text-align: center; margin-bottom: 8px;">Next Steps</h2>
+  <p class="hook" style="text-align: center;">From here to first reports in weeks.</p>
+  <ul class="bullets" style="max-width: 700px;">
+    <li><span class="num">1</span>Applus reviews deployment plan and pricing options</li>
+    <li><span class="num">2</span>Pilot kickoff at Grangemouth — Month 1</li>
+    <li><span class="num">3</span>Format validation with INEOS before go-live</li>
+    <li><span class="num">4</span>Scott and team onboarded — first real reports through Scope</li>
+  </ul>
+</div>
+
+<!-- ============================================ -->
+<!-- INTERNAL SECTION (Slides 11-15)              -->
+<!-- ============================================ -->
+
+<!-- SLIDE 11: Internal Section Header -->
+<div class="slide slide-section slide-internal" id="s11">
+  <p class="internal-badge">INTERNAL</p>
+  <h1>Scope Playbook</h1>
+  <p class="subtitle">Negotiation strategy, deployment detail, and risk planning.</p>
+</div>
+
+<!-- SLIDE 12: Negotiation Approach -->
+<div class="slide slide-content" id="s12">
+  <p class="internal-badge">INTERNAL</p>
+  <h2>Negotiation Approach</h2>
+  <p class="hook">Anchor high, steer to the middle, hold SkillStation back.</p>
+  <ul class="bullets">
+    <li><span class="num">1</span><strong>Present all three options</strong> — Let Applus discuss internally. Enterprise anchors high, Partnership feels reasonable</li>
+    <li><span class="num">2</span><strong>Phased pricing path</strong> — Start Grangemouth pilot on Essentials. Move to Partnership as more sites come online</li>
+    <li><span class="num">3</span><strong>SkillStation is the ace card</strong> — Applus wants it badly. Hold as Enterprise-only: <em>"We can explore SkillStation as part of a broader partnership"</em></li>
+    <li><span class="num">4</span><strong>All options are fair</strong> — 15-24% value capture is well within SaaS norms. Applus keeps 76-86% of the value</li>
+  </ul>
+</div>
+
+<!-- SLIDE 13: Full Deployment Plan -->
+<div class="slide slide-content" id="s13">
+  <p class="internal-badge">INTERNAL</p>
+  <h2>Full Deployment Plan</h2>
+  <p class="hook">Client-safe rollout. Every phase gated on format approval.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>Timeline</th>
+        <th>Sites</th>
+        <th>Inspectors</th>
+        <th>Focus</th>
+        <th>Success Gate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong class="accent">1. Pilot</strong></td>
+        <td>Month 1-2</td>
+        <td><span class="accent-green">Grangemouth</span></td>
+        <td><span class="accent-green">14</span></td>
+        <td>UT thickness reports only</td>
+        <td>Format validated with INEOS. &lt;30 min reports</td>
+      </tr>
+      <tr>
+        <td><strong class="accent">2. Expand</strong></td>
+        <td>Month 3-4</td>
+        <td><span class="accent-green">+ Falkirk</span></td>
+        <td><span class="accent-green">47</span></td>
+        <td>Broader report types</td>
+        <td>Falkirk onboarded. No client complaints</td>
+      </tr>
+      <tr>
+        <td><strong class="accent">3. Scale</strong></td>
+        <td>Month 5-8</td>
+        <td><span class="accent-green">+ Yarmouth + Clevedon</span></td>
+        <td><span class="accent-green">100</span></td>
+        <td>Paper-heavy sites. Offline-first</td>
+        <td>Yarmouth off paper. Clevedon mobile</td>
+      </tr>
+      <tr>
+        <td><strong class="accent">4. Full</strong></td>
+        <td>Month 9-12</td>
+        <td><span class="accent-green">+ Advanced NDT</span></td>
+        <td><span class="accent-green">120</span></td>
+        <td>Complex NDT workflows</td>
+        <td>All 5 sites live. Full coverage</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SLIDE 14: Risks -->
+<div class="slide slide-content" id="s14">
+  <p class="internal-badge">INTERNAL</p>
+  <h2>Risk Flags & Mitigation</h2>
+  <p class="hook">We know where this can break. Here's how we stop it.</p>
+  <div class="risk-grid" style="margin-top: 8px;">
+    <div class="risk-card high">
+      <div class="risk-label sev-high">HIGH</div>
+      <div class="risk-title">Client rejects new report format</div>
+      <div class="risk-fix">Side-by-side validation every phase. Jon approves format before go-live</div>
+    </div>
+    <div class="risk-card med">
+      <div class="risk-label sev-med">MEDIUM</div>
+      <div class="risk-title">Inspectors resist adoption</div>
+      <div class="risk-fix">Demo real time savings. Get Scott as champion — if he buys in, others follow</div>
+    </div>
+    <div class="risk-card med">
+      <div class="risk-label sev-med">MEDIUM</div>
+      <div class="risk-title">Yarmouth paper-to-digital too jarring</div>
+      <div class="risk-fix">Extended training period. Buddy system with Falkirk digital-native inspectors</div>
+    </div>
+    <div class="risk-card med">
+      <div class="risk-label sev-med">MEDIUM</div>
+      <div class="risk-title">Shutdown spikes during rollout</div>
+      <div class="risk-fix">Phase launches outside shutdown windows. Fallback to existing process</div>
+    </div>
+    <div class="risk-card low">
+      <div class="risk-label sev-low">LOW</div>
+      <div class="risk-title">Poor connectivity for photo sync</div>
+      <div class="risk-fix">Offline-first mobile design. Batch sync on good connection</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15: Internal Next Steps -->
+<div class="slide slide-content" id="s15" style="justify-content: center; align-items: center;">
+  <p class="internal-badge">INTERNAL</p>
+  <h2 style="font-size: 2.4rem; text-align: center; margin-bottom: 8px;">Scope Next Steps</h2>
+  <p class="hook" style="text-align: center;">What we do before Month 1 starts.</p>
+  <ul class="bullets" style="max-width: 700px;">
+    <li><span class="num">1</span><strong>Format lock</strong> — Replicate L5-NDT-UTT-F01 Rev 1 exactly in Scope. Get Jon sign-off on output</li>
+    <li><span class="num">2</span><strong>Champion strategy</strong> — Scott is the key. Get him bought in first, others follow</li>
+    <li><span class="num">3</span><strong>INEOS validation</strong> — Send side-by-side old vs new report to INEOS before pilot go-live</li>
+    <li><span class="num">4</span><strong>Mobile offline fix</strong> — Confirm offline bug is resolved before field deployment</li>
+    <li><span class="num">5</span><strong>Shutdown calendar</strong> — Map shutdown windows for all 5 sites. Don't launch during crunch</li>
+  </ul>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button onclick="prev()">&#8592; Prev</button>
+  <button onclick="next()">Next &#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  // Add page numbers to each slide
+  slides.forEach((slide, i) => {
+    const pn = document.createElement('div');
+    pn.className = 'page-number';
+    pn.textContent = (i + 1) + ' / ' + slides.length;
+    slide.appendChild(pn);
+  });
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+</script>
+
+</body>
+</html>

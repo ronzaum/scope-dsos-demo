@@ -1,5 +1,5 @@
 # Template Library — Index
-# Last Updated: 2026-03-02
+# Last Updated: 2026-03-06
 
 ---
 
@@ -15,6 +15,7 @@ Every template spec created via `/Template_Spec` is stored here. This index trac
 |---|----------------|----------|---------------|--------|------|
 | 1 | Pressure Vessel (API 510) | API 510, PSSR 2000 | Example — tool-agnostic reference | Complete | `example_pressure_vessel_api510.md` |
 | 2 | Pipeline (API 570) | API 570, API 574, ASME B31.3, PSSR 2000 | Bureau Veritas — Petrochemical Division | QA'd | `pipeline_api570.md` |
+| 3 | UT Thickness Testing (Storage Tanks) | BS EN ISO 17640, API 653, EEMUA 159, PSSR 2000 | Applus+ UK — INEOS Grangemouth, NDT | QA'd | `ut_thickness_testing_bs_en_iso_17640.md` |
 
 ---
 
